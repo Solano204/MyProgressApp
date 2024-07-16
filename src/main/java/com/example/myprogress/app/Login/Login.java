@@ -35,8 +35,8 @@ public sealed interface Login permits FacebookLogin, GoogleLogin, AppLogin {
         if (!validateUser(user)) {
             return false;
         }
-        
-        return true;
+            
+            return true;
     }
 
     public default boolean logerUserExist() {
