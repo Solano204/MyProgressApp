@@ -15,10 +15,11 @@ public interface AppUserRepository extends JpaRepository<appUser, String> {
     public appUser getAppUser(@Param("personId") Long personId);
 
     // Recordatorio this has to return the person was created
-    @Query(value = "CALL add_user_app (:userId, :userPassword, :userEmail)", nativeQuery = true)
+    @Query(value = "CALL add_user_app (:userId, :userPassword, :userEmail, :typeAuthentication)", nativeQuery = true)
     appUser getUserByParams(@Param("userId") String userId,
             @Param("userPassword") String userPassword,
-            @Param("userEmail") String userEmail);
+            @Param("userEmail") String userEmail,
+            @Param("typeAuthentication") String typeAuthentication);
 
 
     // Recordatorio create this procedure

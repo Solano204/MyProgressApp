@@ -15,9 +15,10 @@ public interface GoogleUserRepository extends JpaRepository<googleUser, String> 
     public googleUser getGoogleUser(@Param("personId") Long personId);
 
     // Recordatorio this has to return the person was created
-    @Query(value = "CALL add_user_google (:userId, :userEmail)", nativeQuery = true)
+    @Query(value = "CALL add_user_google (:userId, :userEmail, :typeAuthentication)", nativeQuery = true)
     googleUser getUserByParams(@Param("userId") String userId, 
-                            @Param("userEmail") String userEmail);
+                            @Param("userEmail") String userEmail,
+                            @Param("typeAuthentication") String typeAuthentication);
 
      // Recordatorio create this procedure
      @Query(value = "CALL user_google_exist_email(:userEmail)", nativeQuery = true)

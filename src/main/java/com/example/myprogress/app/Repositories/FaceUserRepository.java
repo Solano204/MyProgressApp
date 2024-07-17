@@ -15,9 +15,10 @@ public interface FaceUserRepository extends JpaRepository<faceUser, String> {
     public faceUser getFaceUser(@Param("personId") Long personId);
 
     // Recordatorio this has to return the person was created
-    @Query(value = "CALL add_user_facebook (:userId, :userEmail)", nativeQuery = true)
+    @Query(value = "CALL add_user_facebook (:userId, :userEmail, :typeAuthentication)", nativeQuery = true)
     faceUser getUserByParams(@Param("userId") String userId, 
-                            @Param("userEmail") String userEmail);
+                            @Param("userEmail") String userEmail,
+                            @Param("typeAuthentication") String typeAuthentication);
 
     // Recordatorio create this procedure
     @Query(value = "CALL user_facebook_exist_email(:userEmail)", nativeQuery = true)

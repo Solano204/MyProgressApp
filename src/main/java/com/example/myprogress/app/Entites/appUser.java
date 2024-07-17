@@ -17,7 +17,8 @@ import jakarta.persistence.*;
             columns = { // The columns have to have the same name and follow the order of the class's constructor
                     @ColumnResult(name = "user", type = String.class),
                     @ColumnResult(name = "password", type = String.class),
-                    @ColumnResult(name = "email", type = String.class)
+                    @ColumnResult(name = "email", type = String.class),
+                    @ColumnResult(name = "typeAuthentication", type = String.class)
             }
             // Recordatorio create the procedure and adapat this names
     )
@@ -31,16 +32,25 @@ import jakarta.persistence.*;
         private String passWord;
         @Column(name = "email_user")
         private String email;
+        @Column(name = "type_authentication")
+        private String typeAuthentication;
 
         public appUser() {
         }
 
-        public appUser(String user, String passWord, String email) {
+        public appUser(String user, String passWord, String email,String typeAuthentication) {
             this.user = user;
             this.passWord = passWord;
             this.email = email;
+            this.typeAuthentication = typeAuthentication;
         }
 
+
+        public String getTypeAuthentication() {
+            return typeAuthentication;
+        }public void setTypeAuthentication(String typeAuthentication) {
+            this.typeAuthentication = typeAuthentication;
+        }
         public String getEmail() {
             return email;
         }
