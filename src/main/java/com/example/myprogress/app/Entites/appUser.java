@@ -1,78 +1,61 @@
 package com.example.myprogress.app.Entites;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
-@NamedNativeQuery(
-    name = "getAppUserSelected", // Name of the namedQuery
-    query ="CALL getAppUser(:personId)",
-    resultSetMapping = "appUserMapping" // Here I specify the name of the convertor of sql result to object java
+@NamedNativeQuery(name = "getAppUserSelected", // Name of the namedQuery
+        query = "CALL getAppUser(:personId)", resultSetMapping = "appUserMapping" // Here I specify the name of the
+                                                                                  // convertor of sql result to object
+                                                                                  // java
 )
 
-// This is the convertor of sql result to result java 
-@SqlResultSetMapping(
-    name = "appUserMapping", 
-    classes = @ConstructorResult( // Here I start to map the query to java
-            targetClass = appUser.class, // I here Specify the name of the class to cast
-            columns = { // The columns have to have the same name and follow the order of the class's constructor
-                    @ColumnResult(name = "user", type = String.class),
-                    @ColumnResult(name = "password", type = String.class),
-                    @ColumnResult(name = "email", type = String.class),
-                    @ColumnResult(name = "typeAuthentication", type = String.class)
-            }
-            // Recordatorio create the procedure and adapat this names
-    )
-)
-    @Table(name = "App_Users")
-    public class appUser {
-        @Id
-        @Column(name = "id_user")
-        private String user;
-        @Column(name = "Password")
-        private String passWord;
-        @Column(name = "email_user")
-        private String email;
-        @Column(name = "type_authentication")
-        private String typeAuthentication;
+// This is the convertor of sql result to result java
+@SqlResultSetMapping(name = "appUserMapping", classes = @ConstructorResult( // Here I start to map the query to java
+        targetClass = appUser.class, // I here Specify the name of the class to cast
+        columns = { // The columns have to have the same name and follow the order of the class's
+                    // constructor
+                @ColumnResult(name = "user", type = String.class),
+                @ColumnResult(name = "password", type = String.class),
+                @ColumnResult(name = "email", type = String.class),
+                @ColumnResult(name = "typeAuthentication", type = String.class),
+                @ColumnResult(name = "currentStarting", type = String.class),
+                @ColumnResult(name = "StartingWeight", type = String.class),
+                @ColumnResult(name = "CurrentWeight", type = String.class),
+                @ColumnResult(name = "EndWeight", type = String.class),
+                @ColumnResult(name = "CurrentCalories", type = String.class),
+                @ColumnResult(name = "LostWeight", type = String.class),
+                @ColumnResult(name = "gainedWeight", type = String.class)
+        }))
+@Table(name = "App_Users")
+public final class appUser extends User {
+    @Column(name = "Password")
+    private String passWord;
 
-        public appUser() {
-        }
-
-        public appUser(String user, String passWord, String email,String typeAuthentication) {
-            this.user = user;
-            this.passWord = passWord;
-            this.email = email;
-            this.typeAuthentication = typeAuthentication;
-        }
-
-
-        public String getTypeAuthentication() {
-            return typeAuthentication;
-        }public void setTypeAuthentication(String typeAuthentication) {
-            this.typeAuthentication = typeAuthentication;
-        }
-        public String getEmail() {
-            return email;
-        }
-
-        public String getPassWord() {
-            return passWord;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public void setPassWord(String passWord) {
-            this.passWord = passWord;
-        }
-
-        public void setUser(String user) {
-            this.user = user;
-        }
-
+    // This contructor will be used in the most of the case to create a new user
+    public appUser(String idUser, String password, String email, String typeAuthentication) {
+        super(idUser, email, typeAuthentication);
+        this.passWord = password;
     }
+
+    // This constructor will be used to map the response of the SqlResultSetMapping
+
+    public appUser(String user, String email, String password,String typeAuthentication, LocalDate currentStarting, int StartingWeight,
+         int CurrentWeight, int EndWeight, int CurrentCalories, int LostWeight, int gainedWeight) {
+        super(user, email,typeAuthentication, currentStarting, StartingWeight, CurrentWeight, EndWeight, CurrentCalories, LostWeight, gainedWeight);
+        this.passWord = password;
+    }   
+
+    public appUser() {
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
+
+}

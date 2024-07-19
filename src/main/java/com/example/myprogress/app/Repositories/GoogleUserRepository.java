@@ -3,29 +3,33 @@ package com.example.myprogress.app.Repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.myprogress.app.Entites.googleUser;
+import com.example.myprogress.app.HandleProcedures.ProcedureRepository;
 
-public interface GoogleUserRepository extends JpaRepository<googleUser, String> {
+@Repository
+public interface GoogleUserRepository extends CrudRepository<googleUser, String>,ProcedureRepository {
 
-    // using named query, I call the query throught its name, and I start to follow
-    // a chain to convert
-    @Query(name = "getGoogleUserSelected", nativeQuery = true)
-    public googleUser getGoogleUser(@Param("personId") Long personId);
+//     // using named query, I call the query throught its name, and I start to follow
+//     // a chain to convert
+//     @Query(name = "getGoogleUserSelected", nativeQuery = true)
+//     public googleUser getGoogleUser(@Param("personId") String personId);
 
-    // Recordatorio this has to return the person was created
-    @Query(value = "CALL add_user_google (:userId, :userEmail, :typeAuthentication)", nativeQuery = true)
-    googleUser getUserByParams(@Param("userId") String userId, 
-                            @Param("userEmail") String userEmail,
-                            @Param("typeAuthentication") String typeAuthentication);
+//     // Recordatorio this has to return the person was created
+//     @Query(value = "CALL add_user_google (:userId, :userEmail, :typeAuthentication)", nativeQuery = true)
+//    public boolean AddUserGoogle(@Param("userId") String userId, 
+//                             @Param("userEmail") String userEmail,
+//                             @Param("typeAuthentication") String typeAuthentication);
 
-     // Recordatorio create this procedure
-     @Query(value = "CALL user_google_exist_email(:userEmail)", nativeQuery = true)
-     Boolean existEmail(
-             @Param("userEmail") String email_user);
+//      // Recordatorio create this procedure
+//      @Query(value = "CALL user_google_exist_email(:userEmail)", nativeQuery = true)
+//      Boolean existEmail(
+//              @Param("userEmail") String email_user);
  
-     @Query(value = "CALL user_google_exist_user(:userId)", nativeQuery = true)
-     Boolean existUser(
-             @Param("userId") String user);
+//      @Query(value = "CALL user_google_exist_user(:userId)", nativeQuery = true)
+//      Boolean existUser(
+//              @Param("userId") String user);
 }
