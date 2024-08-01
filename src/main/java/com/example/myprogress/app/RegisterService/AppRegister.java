@@ -1,45 +1,46 @@
 package com.example.myprogress.app.RegisterService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.example.myprogress.app.Entites.User;
+import com.example.myprogress.app.Entites.appUser;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 
 public final class AppRegister extends Register {
 
-    private  AppUserRepository appUserRepository;
-    
-
+    private AppUserRepository appUserRepository;
 
     public AppRegister(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
     }
 
     @Override
-    public boolean validateEmail(String email,String typeAuthentication) {
+    public boolean validateEmail(String email, String typeAuthentication) {
         return appUserRepository.ExistEmail(email, typeAuthentication); // return true if the email exists
     }
 
     @Override
-    public boolean validateUser(String user,String typeAuthentication) {
-        return !appUserRepository.ExistUser(user, typeAuthentication); // Here I return the opposite (exits == false) (does not exist == true)
+    public boolean validateUser(String user) {
+        return !appUserRepository.ExistUser(user ); // Here I return the opposite (exits == false)
+                                                                       // (does not exist == true)
     }
 
     @Override
-    public boolean logerUser(String user, String passWord, String email,String typeAuthentication) {
-            if (!appUserRepository.addUser(user, passWord, email, typeAuthentication)) {
-                new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception 
-                return false;
+    public boolean logerUser(appUser user) {
+        if (appUserRepository.addUser(user.getUser(), user.getPassWord(), user.getEmail(),user.getTypeAuthentication())) {
+            loadRecommendedData(user); // Here I call the method default to load the recommend to the current user
+            if (appUserRepository.addProgressUser(user)) {
+                return true;
             }
-            return true; // return true if the user was registered
+            throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
+        }
+        throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
     }
 
     @Override
     public <T> T getInformationUser(String idUser, String typeAuthentication) {
         return (T) appUserRepository.getUserSelected(idUser, typeAuthentication);
     }
-
-   
-    
-
 
 }

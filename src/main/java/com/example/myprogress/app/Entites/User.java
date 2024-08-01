@@ -2,10 +2,22 @@ package com.example.myprogress.app.Entites;
 
 import java.time.LocalDate;
 
+import com.example.myprogress.app.validations.AuthenticationUser;
+import com.example.myprogress.app.validations.RegisterInformation;
+import com.example.myprogress.app.validations.ValidationOnlyRegisterGroup;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
+
+
+
+@Data
+@FieldDefaults(level = lombok.AccessLevel.PROTECTED) 
 
 // In this classs will apply the inheritance between classes
 
@@ -21,18 +33,11 @@ public sealed class User permits appUser, faceUser, googleUser {
 
     // This is the constructor will help the subclasses to can use the class
     // @SqlResultSetMapping,This will be used by the namedQuery
-        public User(String user, String email, String typeAuthentication, LocalDate currentStarting, int StartingWeight,
-                int CurrentWeight, int EndWeight, int CurrentCalories, int LostWeight, int gainedWeight) {
+        public User(String user, String email, String typeAuthentication, LocalDate currentStarting, double StartingWeight,
+                double CurrentWeight, double EndWeight, int CurrentCalories, double LostWeight, double gainedWeight) {
             this.user = user;
             this.email = email;
             this.typeAuthentication = typeAuthentication;
-            this.currentStarting = currentStarting;
-            this.StartingWeight = StartingWeight;
-            this.CurrentWeight = CurrentWeight;
-            this.EndWeight = EndWeight;
-            this.CurrentCalories = CurrentCalories;
-            this.LostWeight = LostWeight;
-            this.gainedWeight = gainedWeight;
         }   
 
     public User() {
@@ -40,105 +45,24 @@ public sealed class User permits appUser, faceUser, googleUser {
 
     @Id
     @Column(name = "id_user")
-    protected String user;
+    String user;
+    
+    @Email(message = "El email no es valido")
     @Column(name = "email_user")
-    protected String email;
+    String email;
+
     @Column(name = "type_authentication")
-    protected String typeAuthentication;
+    String typeAuthentication;
 
+     // This is the information when the user will be registered 
     @Transient
-    protected LocalDate currentStarting;
+    @RegisterInformation(groups = {ValidationOnlyRegisterGroup.class})
+    InfoRegister registerInformation;
+
+    // This is the information when the new user was registered
     @Transient
-    protected int StartingWeight;
-    @Transient
-    protected int CurrentWeight;
-    @Transient
-    protected int EndWeight;
-    @Transient
-    protected int CurrentCalories;
-    @Transient
-    protected int LostWeight;
-    @Transient
-    protected int gainedWeight;
-    public String getUser() {
-        return user;
-    }
+    infoLogged infoLogged;
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTypeAuthentication() {
-        return typeAuthentication;
-    }
-
-    public void setTypeAuthentication(String typeAuthentication) {
-        this.typeAuthentication = typeAuthentication;
-    }
-
-    public LocalDate getCurrentStarting() {
-        return currentStarting;
-    }
-
-    public void setCurrentStarting(LocalDate currentStarting) {
-        this.currentStarting = currentStarting;
-    }
-
-    public int getStartingWeight() {
-        return StartingWeight;
-    }
-
-    public void setStartingWeight(int startingWeight) {
-        StartingWeight = startingWeight;
-    }
-
-    public int getCurrentWeight() {
-        return CurrentWeight;
-    }
-
-    public void setCurrentWeight(int currentWeight) {
-        CurrentWeight = currentWeight;
-    }
-
-    public int getEndWeight() {
-        return EndWeight;
-    }
-
-    public void setEndWeight(int endWeight) {
-        EndWeight = endWeight;
-    }
-
-    public int getCurrentCalories() {
-        return CurrentCalories;
-    }
-
-    public void setCurrentCalories(int currentCalories) {
-        CurrentCalories = currentCalories;
-    }
-
-    public int getLostWeight() {
-        return LostWeight;
-    }
-
-    public void setLostWeight(int lostWeight) {
-        LostWeight = lostWeight;
-    }
-
-    public int getGainedWeight() {
-        return gainedWeight;
-    }
-
-    public void setGainedWeight(int gainedWeight) {
-        this.gainedWeight = gainedWeight;
-    }
 
 
 

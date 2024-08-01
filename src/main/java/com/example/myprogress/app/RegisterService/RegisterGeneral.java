@@ -4,37 +4,54 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.myprogress.app.Entites.appUser;
+import com.example.myprogress.app.GeneralServices.GeneratorDataUser;
+import com.example.myprogress.app.GeneralServices.MessagesFinal;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 import com.example.myprogress.app.Repositories.FaceUserRepository;
+import com.example.myprogress.app.Repositories.GoogleUserRepository;
 
 @Service
 public class RegisterGeneral {
 
     private AppUserRepository appUserRepository;
     private FaceUserRepository faceUserRepository; 
+    private GoogleUserRepository googleUserRepository;
+    private GeneratorDataUser generatorDataUser;
+    private MessagesFinal messagesFinal;
 
-    public RegisterGeneral(AppUserRepository appUserRepository, FaceUserRepository faceUserRepository) {
+    public RegisterGeneral(AppUserRepository appUserRepository, FaceUserRepository faceUserRepository, GoogleUserRepository googleUserRepository, GeneratorDataUser generatorDataUser, MessagesFinal messagesFinal) {
         this.appUserRepository = appUserRepository;
         this.faceUserRepository = faceUserRepository;
+        this.googleUserRepository = googleUserRepository;
+        this.generatorDataUser = generatorDataUser;
+        this.messagesFinal = messagesFinal;
     }
 
     private Register register;
 
     
-    public boolean RegisterUser(final String user, final String passWord,
-            final String email, final String typeRegister) {
-        return switch (typeRegister) {
-            case "FacebookRegister" -> {
+    public boolean RegisterUser(appUser user) {
+        return switch (user.getTypeAuthentication()) {
+            case "Facebook" -> {
+                
                 register = new FacebookRegister(faceUserRepository);
-                yield register.templateRegister(user, "NoPassword", email, typeRegister);
+                register.setGeneratorDataUser(generatorDataUser);
+                register.setMessagesFinal(messagesFinal);
+                yield register.templateRegister(user);
+
             }
-            case "GoogleRegister" -> {
-                register = new GoogleRegister();
-                yield register.templateRegister(user, "NoPassword", email, typeRegister);
+            case "Google" -> {
+                register = new GoogleRegister(googleUserRepository);
+                register.setGeneratorDataUser(generatorDataUser);
+                register.setMessagesFinal(messagesFinal);
+                yield register.templateRegister(user);
             }
-            case "AppRegister" -> {
+            case "App" -> {
                 register = new AppRegister(appUserRepository);
-                yield register.templateRegister(user, passWord, email, typeRegister);
+                register.setGeneratorDataUser(generatorDataUser);
+                register.setMessagesFinal(messagesFinal);
+                yield register.templateRegister(user);
             }
             default -> false;
         };
