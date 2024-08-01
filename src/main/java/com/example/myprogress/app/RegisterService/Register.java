@@ -18,7 +18,7 @@ import com.example.myprogress.app.GeneralServices.MessagesFinal;
 
 // In this example, the Register interface is sealed. and I'll apply the design pattern TEMPLATE
 @Service
-public sealed abstract class Register permits FacebookRegister, GoogleRegister, AppRegister {
+public sealed abstract class Register permits FacebookRegister, GoogleRegister, AppRegister  {
 
 
     private GeneratorDataUser generatorDataUser;
@@ -42,7 +42,6 @@ public sealed abstract class Register permits FacebookRegister, GoogleRegister, 
 
         // Here I'll do the register
         if (logerUser(user)) {
-            fillInformationSuccess(user.getUser(), user.getTypeAuthentication());
             return true;
         }
         return true;
@@ -53,23 +52,7 @@ public sealed abstract class Register permits FacebookRegister, GoogleRegister, 
     }
 
 
-    // This method will be used to fill with the information of the success register
-    // and the user registered
-    public <T> void fillInformationSuccess(final String idUser, final String typeAuthentication) {
 
-        // If the typeAuthentication is AppRegister I get the password
-        if (typeAuthentication.equals("App")) {
-            appUser appUser = getInformationUser(idUser, typeAuthentication);
-            messages.put("password", appUser.getPassWord());
-            messagesFinal.fillMapInformation(messages, appUser);
-            return;
-        }
-        User user = getInformationUser(idUser, typeAuthentication);
-        messagesFinal.fillMapInformation(messages, user);
-    }
-
-
-    // Here I load all information about the new user registered in a map to send the frontend
 
     // return true if the email exists and was succesful the Register or the
     // register
@@ -92,16 +75,6 @@ public sealed abstract class Register permits FacebookRegister, GoogleRegister, 
         generatorDataUser.updateInformationRecommended();
     }
 
-    abstract <T> T getInformationUser(String idUser, String typeAuthentication);
-
-    public Map<String, Object> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Map<String, Object> messages) {
-        this.messages = messages;
-    }
-
     public GeneratorDataUser getGeneratorDataUser() {
         return generatorDataUser;
     }
@@ -110,12 +83,5 @@ public sealed abstract class Register permits FacebookRegister, GoogleRegister, 
         this.generatorDataUser = generatorDataUser;
     }
     
-
-    public void setMessagesFinal(MessagesFinal messagesFinal) {
-        this.messagesFinal = messagesFinal;
-    }
-    public MessagesFinal getMessagesFinal() {
-        return messagesFinal;
-    }
 
 }

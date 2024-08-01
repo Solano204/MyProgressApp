@@ -22,9 +22,5 @@ public non-sealed class FacebookLogin extends Login {
         return facebookUserRepository.ExistUser(user);
     }
 
-    @Override
-    public <T> T getInformationUser(String idUser,String typeAuthentication) {
-        return (T) facebookUserRepository.getUserSelected(idUser, typeAuthentication);
-    }
-    
+
 }

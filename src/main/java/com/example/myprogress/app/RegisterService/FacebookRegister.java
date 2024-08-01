@@ -1,5 +1,7 @@
 package com.example.myprogress.app.RegisterService;
 
+import java.io.Serializable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.myprogress.app.Entites.User;
@@ -7,7 +9,7 @@ import com.example.myprogress.app.Entites.appUser;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Repositories.FaceUserRepository;
 
-public final class FacebookRegister extends Register {
+public final class FacebookRegister extends Register implements Serializable {
 
     private FaceUserRepository facebookUserRepository;
 
@@ -35,11 +37,6 @@ public final class FacebookRegister extends Register {
             throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
         }
         throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
-    }
-
-    @Override
-    public <T> T getInformationUser(String idUser, String typeAuthentication) {
-        return (T) facebookUserRepository.getUserSelected(idUser, typeAuthentication);
     }
 
 }

@@ -37,24 +37,25 @@ public class RegisterGeneral {
                 
                 register = new FacebookRegister(faceUserRepository);
                 register.setGeneratorDataUser(generatorDataUser);
-                register.setMessagesFinal(messagesFinal);
                 yield register.templateRegister(user);
 
             }
             case "Google" -> {
                 register = new GoogleRegister(googleUserRepository);
                 register.setGeneratorDataUser(generatorDataUser);
-                register.setMessagesFinal(messagesFinal);
                 yield register.templateRegister(user);
             }
             case "App" -> {
                 register = new AppRegister(appUserRepository);
                 register.setGeneratorDataUser(generatorDataUser);
-                register.setMessagesFinal(messagesFinal);
                 yield register.templateRegister(user);
             }
             default -> false;
         };
+    }
+
+    public <T> T getUserRegistered(appUser user){
+       return appUserRepository.getUserSelected(user.getUser(), user.getTypeAuthentication());
     }
 
     public Register getRegister() {

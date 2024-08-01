@@ -1,5 +1,7 @@
 package com.example.myprogress.app.Entites;
 
+import java.io.Serializable;
+
 import com.example.myprogress.app.validations.RegisterInformation;
 
 import lombok.Builder;
@@ -12,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 @RegisterInformation
-public class InfoRegister {
+public class InfoRegister  implements Serializable {
 
     String name;
     int age;

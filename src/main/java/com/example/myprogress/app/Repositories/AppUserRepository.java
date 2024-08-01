@@ -1,5 +1,7 @@
 package com.example.myprogress.app.Repositories;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.Modifying;
@@ -40,8 +42,11 @@ public interface AppUserRepository extends CrudRepository<appUser, String>, Proc
 
         @Transactional
         @Modifying
-        @Query(value = "UPDATE app_users SET Password = :newPassword WHERE id_User = :User AND Password = :oldPassword", nativeQuery = true)
+        @Query(value = "UPDATE app_users SET Password = :newPassword WHERE id_User = :User ", nativeQuery = true)
         int updatePassword(@Param("newPassword") String newPassword,
-                           @Param("User") String User,
-                           @Param("oldPassword") String oldPassword);
+                        @Param("User") String User);
+
+                        
+        @Query("SELECT u FROM appUser u WHERE u.user = :id")
+        Optional<appUser> findByIdUser(@Param("id") String id);
 }

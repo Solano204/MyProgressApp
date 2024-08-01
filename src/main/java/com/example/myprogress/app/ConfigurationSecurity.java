@@ -1,9 +1,7 @@
 package com.example.myprogress.app;
 
-
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,23 +15,47 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.example.myprogress.app.GeneralServices.MessagesFinal;
+import com.example.myprogress.app.LoginService.LoginGeneral;
+import com.example.myprogress.app.RegisterService.RegisterGeneral;
+import com.example.myprogress.app.Repositories.AppUserRepository;
 import com.example.myprogress.app.SpringSecurity.AuthenticationStart;
+import com.example.myprogress.app.SpringSecurity.BuildToken;
 import com.example.myprogress.app.SpringSecurity.RegisterSecurity;
 import com.example.myprogress.app.SpringSecurity.ValidateToken;
-
+import com.example.myprogress.app.updateInformationService.caloriesIntakeService;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class ConfigurationSecurity {
 
     // Here I configure the authentication
-    @Autowired
-    private AuthenticationConfiguration authenticationConfiguration;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final BuildToken buildToken;
+    private final caloriesIntakeService caloriesIntakeService;
+    private final LoginGeneral loginGeneral;
+    private final RegisterGeneral registerGeneral;
+    private final AppUserRepository repósitory;
+    private final MessagesFinal messagesFinal;
+
+    public ConfigurationSecurity(AuthenticationConfiguration authenticationConfiguration, BuildToken buildToken,
+            caloriesIntakeService caloriesIntakeService, LoginGeneral loginGeneral, RegisterGeneral registerGeneral,
+            AppUserRepository repósitory, MessagesFinal messagesFinal) {
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.buildToken = buildToken;
+        this.messagesFinal = messagesFinal;
+        this.caloriesIntakeService = caloriesIntakeService;
+        this.registerGeneral = registerGeneral;
+        this.loginGeneral = loginGeneral;
+        this.repósitory = repósitory;
+    }
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
@@ -46,26 +68,25 @@ public class ConfigurationSecurity {
     }
 
     @Bean
-    SecurityFilterChain seciroFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests((authz) -> authz
-                .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll() 
-                .anyRequest().authenticated()) 
-                .addFilter(new AuthenticationStart(authenticationManager())) // Here I add the authentication process generation of the token
-                .addFilter(new ValidateToken(authenticationManager()))
-                .addFilter(new RegisterSecurity())
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.authorizeHttpRequests(authz -> authz
+                .requestMatchers(HttpMethod.POST, "/login/User").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register/User").permitAll()
+                .anyRequest().authenticated())
+                .addFilterBefore(
+                        new RegisterSecurity(registerGeneral, caloriesIntakeService, buildToken, encryptPasswordUser()),
+                        UsernamePasswordAuthenticationFilter.class) // Add before an existing filter
+                .addFilter(new AuthenticationStart(authenticationManager(), buildToken, repósitory, loginGeneral, messagesFinal))
+                .addFilter(new ValidateToken(authenticationManager())) // Add
+                                                                                                              // before
+                                                                                                              // an
+                                                                                                              // existing
+                                                                                                              // filter
                 .csrf(config -> config.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Hability the config to accept one
-                                                                                   // frontend in my backend
-                .sessionManagement(magnament -> magnament.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configure CORS
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
-
-
-
-
-
-
 
     // C:\Maven\apache-maven-3.8.6\bin).
     // In this method I ALLOW PERMISSION TO FRONTEND TO CONNECT WIYTH MY BACKEND AND

@@ -23,11 +23,6 @@ public non-sealed class GoogleLogin extends Login {
         return googleUserRepository.ExistUser(user);
     }
     
-    
-    @Override
-    public <T> T getInformationUser(String idUser, String typeAuthentication) {
-        return (T) googleUserRepository.getUserSelected(idUser, typeAuthentication);
-    }
 
 
 }

@@ -196,7 +196,6 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         // This object contain the information to saved
         InfoRegister registerInfo = normalUser.getRegisterInformation();
         infoLogged loggedInfo = normalUser.getInfoLogged();
-
         normalUser.setUser((String) query.getOutputParameterValue("UserS"));
         normalUser.setEmail((String) query.getOutputParameterValue("EmailS"));
         normalUser.setTypeAuthentication((String) query.getOutputParameterValue("TypeAuthenticationS"));
@@ -239,18 +238,12 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         // Register input parameters
         query.registerStoredProcedureParameter("userOld", String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter("newUser", String.class, ParameterMode.IN);
-        if (user.getTypeAuthentication().equals("App")) {
-            query.registerStoredProcedureParameter("PasswordS", String.class, ParameterMode.IN);
-        }
         // Register output parameter
         query.registerStoredProcedureParameter("in_success", Boolean.class, ParameterMode.OUT);
 
         // Set input parameters
         query.setParameter("userOld", user.getUser());
         query.setParameter("newUser", newUser);
-        if (user.getTypeAuthentication().equals("App")) {
-            query.setParameter("PasswordS", user.getPassWord());
-        }
 
         // Execute the stored procedure
         boolean t = query.execute();
@@ -355,9 +348,6 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery(nameProcedure);
         // Register input parameters
         query.registerStoredProcedureParameter("userOld", String.class, ParameterMode.IN);
-        if (user.getTypeAuthentication().equals("App")) {
-            query.registerStoredProcedureParameter("PasswordS", String.class, ParameterMode.IN);
-        }
 
         // Register output parameter
         query.registerStoredProcedureParameter("in_success", Boolean.class, ParameterMode.OUT);
@@ -365,9 +355,6 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         // Set input parameters
         query.setParameter("userOld", user.getUser());
 
-        if (user.getTypeAuthentication().equals("App")) {
-            query.setParameter("PasswordS", user.getPassWord());
-        }
 
         // Execute the stored procedure
         boolean t = query.execute();

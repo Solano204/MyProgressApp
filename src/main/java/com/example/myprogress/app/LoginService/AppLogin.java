@@ -10,7 +10,7 @@ import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Exceptions.UserExistException;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 
-public non-sealed class AppLogin extends Login {
+public non-sealed class AppLogin extends Login{
 
     private AppUserRepository appUserRepository;
 
@@ -30,16 +30,9 @@ public non-sealed class AppLogin extends Login {
         if (!appUserRepository.ExistUser(user)) {
             throw new UserExistException("The user Not found, please register");
         }
-        if (appUserRepository.validatePassword(user, password) == 0) {
-            throw new PasswordIncorrect("The password is incorrect, please fix it up");
-        }
+
         ; // HERE i return false if the user not exists
         return true;
-    }
-
-    @Override
-    public <T> T getInformationUser(String idUser, String typeAuthentication) {
-        return (T) appUserRepository.getUserSelected(idUser, typeAuthentication);
     }
 
 }

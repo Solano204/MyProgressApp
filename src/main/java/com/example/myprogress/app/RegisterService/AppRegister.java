@@ -1,5 +1,7 @@
 package com.example.myprogress.app.RegisterService;
 
+import java.io.Serializable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.myprogress.app.Entites.User;
@@ -7,7 +9,7 @@ import com.example.myprogress.app.Entites.appUser;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 
-public final class AppRegister extends Register {
+public final class AppRegister extends Register implements Serializable {
 
     private AppUserRepository appUserRepository;
 
@@ -38,9 +40,5 @@ public final class AppRegister extends Register {
         throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
     }
 
-    @Override
-    public <T> T getInformationUser(String idUser, String typeAuthentication) {
-        return (T) appUserRepository.getUserSelected(idUser, typeAuthentication);
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.myprogress.app.Entites;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "Facebook_Users")
-public final class faceUser extends User {
+public final class faceUser extends User implements Serializable {
 
     // This is the constructor of the class to do transfer between java and sql
     public faceUser(String user, String email, String typeAuthentication) {

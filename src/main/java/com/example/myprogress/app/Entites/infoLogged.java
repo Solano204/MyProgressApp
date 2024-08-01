@@ -1,5 +1,6 @@
 package com.example.myprogress.app.Entites;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 
-public class infoLogged {
+public class infoLogged implements Serializable {
 
 
 

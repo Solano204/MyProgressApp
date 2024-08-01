@@ -1,5 +1,6 @@
 package com.example.myprogress.app.Entites;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.example.myprogress.app.validations.AuthenticationUser;
@@ -16,11 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @AuthenticationUser
 @Table(name = "App_Users")
-public final class appUser extends User {
+public final class appUser extends User implements Serializable {
     @Column(name = "Password")
     private String passWord;
-
-
 
     // This contructor will be used in the most of the case to create a new user
     public appUser(String idUser, String password, String email, String typeAuthentication) {

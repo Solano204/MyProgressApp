@@ -1,4 +1,6 @@
 package com.example.myprogress.app.Entites;
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,7 +18,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 @NoArgsConstructor
-public class CaloriesIntake {
+public class CaloriesIntake implements Serializable{
 
     @Id
     @Field(name = "_id")

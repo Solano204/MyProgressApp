@@ -1,5 +1,6 @@
 package com.example.myprogress.app.Entites;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.example.myprogress.app.validations.AuthenticationUser;
@@ -22,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 // In this classs will apply the inheritance between classes
 
 @MappedSuperclass
-public sealed class User permits appUser, faceUser, googleUser {
+public abstract class User implements Serializable {
 
     // This is the constructor of the class to do transfer between java and sql
     public User(String user, String email, String typeAuthentication) {
@@ -51,8 +52,11 @@ public sealed class User permits appUser, faceUser, googleUser {
     @Column(name = "email_user")
     String email;
 
-    @Column(name = "type_authentication")
+    @Transient
     String typeAuthentication;
+
+    @Column(name = "id_authentication")
+    int auth;
 
      // This is the information when the user will be registered 
     @Transient

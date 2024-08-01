@@ -1,6 +1,5 @@
 package com.example.myprogress.app.SpringSecurity;
 
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,8 +18,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.lang.Arrays;
+import io.jsonwebtoken.lang.Collections;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,74 +42,34 @@ public class ValidateToken extends BasicAuthenticationFilter {
 
         System.out.println("header " + header);
 
-        if (header == null || !header.startsWith(VariablesGeneral.HEADER_TOKEN)) { // If the entity that is trygin query
-                                                                                   // our backend and its public and
-                                                                                   // doesnt have TOKEN, I direct it the
-                                                                                   // query, This effectively means the user isn't authenticated.
-            chain.doFilter(request, response); // This method help me to direct the user directly the method REQUEST
-                                               // what He queried
+        if (header == null || !header.startsWith(VariablesGeneral.HEADER_TOKEN)) {
+            chain.doFilter(request, response);
             return;
         }
 
-        // I remove the carrier, so I can only obtain the information from the token and
-        // it can be evaluated
         String token = header.replace(VariablesGeneral.HEADER_TOKEN, "");
         System.out.println("token " + token);
 
         try {
-            // THIS IS THE PROCCES OF THE AUTHENTICATION
-            // The Jwts.parser() method initiates the parsing process. Here's what happens: Token Decomposition: The token is split into its three parts (header, payload, and signature)
-            // VERIFIWITH, Here I get the token split and after using the secret key and the algorithm to validate if the key is valid, DONT VALIDATE THE USER AND ROLES,EXPIRITION only the KEY and also here calidate If the token is expired, jjwt will throw an ExpiredJwtException.If the token is expired, jjwt will throw an ExpiredJwtException. AUTOMATICALLY
             Claims claims = Jwts.parser().verifyWith(VariablesGeneral.SECRET_KEY).build().parseSignedClaims(token)
-                    .getPayload(); // Verify if the token is correct with the Secret key,This part is very crucial is where Define if I following with the process
-            
-                    // Apart from here I wont need validate the user and authories, With the validation of the key is enough
-            // String username = claims.getSubject(); TO GET THE USER 2 WAYS
-            String username = (String) claims.get("username");
-            Object authoritiesClaim = claims.get("authorities"); // I get the roles
+                    .getPayload(); // Verify if the token is correct with the Secret key,This part is very crucial
+                                   // is where Define if I following with the process
 
-            // To add the roles
-            Collection<? extends GrantedAuthority> authorities = Arrays.asList(new ObjectMapper()
-                    // Registers ClassCasteoContructor as a mixin for
-                    // SimpleGrantedAuthority.especifica que Jackson debe usar el constructor
-                    // definido en ClassCasteoContructor para deserializar JSON en objetos
-                    // SimpleGrantedAuthority.
-                    .addMixIn(SimpleGrantedAuthority.class, ClassCasteoContructor.class)
-                    /*
-                     * Registers ClassCasteoContructor as a mixin for
-                     * SimpleGrantedAuthority.especifica que Jackson debe usar el constructor
-                     * definido en ClassCasteoContructor para deserializar JSON en objetos
-                     * SimpleGrantedAuthority. lo que realmente hara es que si en el json hay un
-                     * campo de nombre role [
-                     * {"role": "ROLE_USER"},
-                     * {"role": "ROLE_ADMIN"}
-                     * and i have a class tranformara el nombre role a authority y este valor del json con el nombre role ahora sera guardado en el valor del objeto authority
-                     * @JsonCreator
-                     * public SimpleGrantedAuthority(@JsonProperty("role") String authority) {
-                     * this.authority = authority;
-                     * }
-                     */
 
-                    .readValue(authoritiesClaim.toString().getBytes(), SimpleGrantedAuthority[].class)); // This part
-                                                                                                         // convert the
-                                                                                                         // roles in a
-                                                                                                         // array of the
-                                                                                                         // byte and
-                                                                                                         // after this
-                                                                                                         // bytes will
-                                                                                                         // to transform
-                                                                                                         // or save in a
-                                                                                                         // array type
-                                                                                                         // SimpleGrantedAuthority[]
+            String username = (String) claims.get("sub");
 
-            // Here generate a token Tem where the user's information will be saved
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
-                    null, authorities);
+            if (username == null) {
+                chain.doFilter(request, response);
+                return;
+            }
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken); // This method saves the token with all the user information during the request, to make it easier for authorization checks and access control to work correctly. When the request ends, the context filter is removed.
-            chain.doFilter(request, response); // I sent the next level or the next filter
+            // Create an Authentication token and set it in the SecurityContext
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    username, null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
+            System.err.println("Invalid JWT token: " + e.getMessage());
             Map<String, String> body = new HashMap();
             body.put("error", e.getMessage());
             body.put("message", "Sorry your Token is invalid");
@@ -117,6 +78,7 @@ public class ValidateToken extends BasicAuthenticationFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(VariablesGeneral.CONTENT_TYPE);
         }
+        chain.doFilter(request, response);
     }
 
 }

@@ -45,9 +45,16 @@ public class caloriesIntakeService {
     }
 
     // Here I restart the calories each 24
-
-    
-
+    public void changeDocumentId(String oldId, String newId) {
+        // 1. Find the original document
+        Query query = new Query(Criteria.where("_id").is(oldId));
+        CaloriesIntake originalDocument = mongoTemplate.findOne(query, CaloriesIntake.class, "caloriesIntake");
+        if (originalDocument != null) {
+            originalDocument.setId(newId);
+            mongoTemplate.save(originalDocument, "caloriesIntake");
+            mongoTemplate.remove(query, "caloriesIntake");
+        }
+    }
     public CaloriesIntake updateCaloriesIntake(String idUser, CaloriesIntake updatedData) {
         Query query = new Query(Criteria.where("_id").is(idUser)); // Find document by idUser
         Update update = new Update();

@@ -1,5 +1,8 @@
 package com.example.myprogress.app.updateInformationService;
 
+import java.util.Optional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.myprogress.app.Entites.appUser;
@@ -17,17 +20,21 @@ public class updateInformationUserService {
 
     GeneratorDataUser generatorDataUser;
     AppUserRepository appUserRepository;
+     private final PasswordEncoder passwordEncoder;
+
+    
 
     
 
 
-    public updateInformationUserService(GeneratorDataUser generatorDataUser, AppUserRepository appUserRepository) {
+    public updateInformationUserService(GeneratorDataUser generatorDataUser, AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.generatorDataUser = generatorDataUser;
+        this.passwordEncoder = passwordEncoder;
         this.appUserRepository = appUserRepository;
     }
 
     // Here I change the user of the app
-    public boolean changeUser(appUser user, String newUser) {
+    public boolean  changeUser(appUser user, String newUser) {
 
         // First validate if already exists a user with the newUser. then Its error
         // because cant there is two users with the same user
@@ -37,6 +44,13 @@ public class updateInformationUserService {
         if (!appUserRepository.ExistUser(user.getUser())) {
             throw new UserExistException("User incorrect please check its the user, not exists");
         }
+
+
+        Optional<appUser> getUser = appUserRepository.findByIdUser(user.getUser());
+        // The order is very important here
+       if(!passwordEncoder.matches(user.getPassWord(), getUser.get().getPassWord())) {
+            return false;
+       };
         return appUserRepository.changeUser(user, newUser);
     }
 
@@ -77,7 +91,16 @@ public class updateInformationUserService {
         if (!appUserRepository.ExistUser(user)) {
             throw new UserExistException("User incorrect please check its the user, not exists");
         }
-        int h = appUserRepository.updatePassword(newPass, user, oldPass);
+        
+    
+        Optional<appUser> getUser = appUserRepository.findByIdUser(user);
+        // The order is very important here
+       if(!passwordEncoder.matches(oldPass, getUser.get().getPassWord())) {
+            return 0;
+       };
+       
+       
+        int h = appUserRepository.updatePassword(passwordEncoder.encode(newPass), user);
         return h;
     }
 
@@ -86,6 +109,12 @@ public class updateInformationUserService {
         if (!appUserRepository.ExistUser(user.getUser())) {
             throw new UserExistException("User incorrect please check its the user, not exists");
         }
+
+        Optional<appUser> getUser = appUserRepository.findByIdUser(user.getUser());
+        // The order is very important here
+       if(!passwordEncoder.matches(user.getPassWord(), getUser.get().getPassWord())) {
+            return false;
+       };
         boolean j = appUserRepository.deleteUser(user);
         return j;
     }

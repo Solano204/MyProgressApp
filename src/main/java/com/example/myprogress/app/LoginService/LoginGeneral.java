@@ -34,17 +34,14 @@ public class LoginGeneral {
         return switch (user.getTypeAuthentication()) {
             case "Facebook" -> {
                 login = new FacebookLogin(faceUserRepository);
-                login.setMessagesFinal(messagesFinal);
                 yield login.templateLogin(user);
             }
             case "Google" -> {
                 login = new GoogleLogin(googleUserRepository);
-                login.setMessagesFinal(messagesFinal);
                 yield login.templateLogin(user);
             }
             case "App" -> {
                 login = new AppLogin(appUserRepository);
-                login.setMessagesFinal(messagesFinal);
                 yield login.templateLogin(user);
             }
             default -> false;
@@ -58,4 +55,9 @@ public class LoginGeneral {
     public void setLogin(Login login) {
         this.login = login;
     }
+
+    
+    public <T> T getUserLoged(appUser user){
+        return appUserRepository.getUserSelected(user.getUser(), user.getTypeAuthentication());
+     }
 }

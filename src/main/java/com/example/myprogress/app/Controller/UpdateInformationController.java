@@ -53,6 +53,7 @@ public class UpdateInformationController {
 
         if (updateInformationUserService.changeUser(user, newUser)) {
             // Here I get the new information with the new user
+            caloriesIntakeService.changeDocumentId(user.getUser(), newUser);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(updateInformationUserService.getDataUpdated(newUser, user.getTypeAuthentication()));
         }
@@ -68,7 +69,6 @@ public class UpdateInformationController {
             // Here I get the new information with the new user
             Map<String, Object> response = new HashMap<>();
             appUser appUser = updateInformationUserService.getDataUpdated(user.getUser(), user.getTypeAuthentication());
-
             response.put("user", appUser);
             response.put("ProgresObjetive", updateInformationUserService.evaluateObjetive(user));
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -90,7 +90,7 @@ public class UpdateInformationController {
         if (user.equals("notFound") || typeAuthentication.equals("notFound") || oldPass.equals("notFound") || newPass.equals("notFound")) {
             throw new FieldIncorrectException("Algun dato esta incorrecto");
         }
-
+        
         if (updateInformationUserService.changePassword(newPass, user, oldPass) != 0) {
             // Here I get the new information with the new user
             return ResponseEntity.status(HttpStatus.OK)
