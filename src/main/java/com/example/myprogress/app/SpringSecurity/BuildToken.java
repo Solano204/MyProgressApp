@@ -22,10 +22,11 @@ public class BuildToken {
 
     private String accessToken;
     private String refreshToken;
+    
 
-    public String generateToken(String user, int expiritionTime) {
+    public String generateToken(String user, long expiritionTime) {
         return Jwts.builder().subject(user)
-                .expiration(new Date(System.currentTimeMillis() + 3600000))
+                .expiration(new Date(System.currentTimeMillis() + expiritionTime))
                 .issuedAt(new Date())
                 .signWith(VariablesGeneral.SECRET_KEY)
                 .compact(); // Here I generate the token final to assign to user

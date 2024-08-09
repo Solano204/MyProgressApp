@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth2 Registration</title>
+</head>
+<body>
+
+    <h1>Login with Google</h1>
+
+    <!-- Registration form -->
+    <form id="registrationForm">
+        <input type="hidden" id="user" value="carlsoss2222">
+        <input type="hidden" id="email" value="carlosjosuelopezsolano98@gmail.com">
+        <input type="hidden" id="typeAuthentication" value="Google">                            
+        <button type="button" onclick="LoginUser()">Login with Google</button>
+    </form>
+
+    <script>
+        async function LoginUser() {
+            const userData = {
+                user: document.getElementById('user').value,
+                email: document.getElementById('email').value,
+                typeAuthentication: document.getElementById('typeAuthentication').value
+            };
+
+            try {
+                const response = await fetch("http://localhost:8080/Login/Google/User", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(userData),
+                    redirect: "manual"
+                });
+
+                if (response.status === 302) {
+                    const redirectUrl = response.headers.get("Location");
+                    window.location.href = redirectUrl;
+                } else {
+                    console.error("Failed to redirect: ", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error during registration:", error);
+            }
+        }
+        
+
+        async function handleSuccessfulAuthentication() {
+            try {
+                const response = await fetch("http://localhost:8080/Register/successfulAuthentication", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log("Authentication Success:", responseData);
+                    localStorage.setItem("token", responseData.token);
+                    localStorage.setItem("refreshToken", responseData.RefreshToken);
+                } else {
+                    console.error("Authentication failed:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error fetching authentication success:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>

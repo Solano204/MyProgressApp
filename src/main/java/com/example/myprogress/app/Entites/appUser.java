@@ -7,6 +7,7 @@ import com.example.myprogress.app.validations.AuthenticationUser;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @AuthenticationUser
+@Builder
 @Table(name = "App_Users")
 public final class appUser extends User implements Serializable {
     @Column(name = "Password")
@@ -34,6 +36,11 @@ public final class appUser extends User implements Serializable {
         super(user, email,typeAuthentication, currentStarting, StartingWeight, CurrentWeight, EndWeight, CurrentCalories, LostWeight, gainedWeight);
         this.passWord = password;
     }   
+
+    @Override
+    public String getUser() {
+        return super.getUser();
+    }
 
 
 }

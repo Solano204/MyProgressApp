@@ -18,7 +18,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 @NoArgsConstructor
-public class CaloriesIntake implements Serializable{
+public class CaloriesIntake implements Serializable { 
 
     @Id
     @Field(name = "_id")

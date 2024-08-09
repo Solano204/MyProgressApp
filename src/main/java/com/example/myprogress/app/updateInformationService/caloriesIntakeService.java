@@ -1,20 +1,20 @@
 package com.example.myprogress.app.updateInformationService;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.mongodb.core.MongoTemplate;
+    import org.springframework.data.mongodb.core.query.Criteria;
+    import org.springframework.data.mongodb.core.query.Query;
+    import org.springframework.data.mongodb.core.query.Update;
+    import org.springframework.stereotype.Service;
 
-import com.example.myprogress.app.Entites.CaloriesIntake;
-import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Exceptions.FieldIncorrectException;
-import com.example.myprogress.app.Repositories.CaloriesIntakeDayRepository;
+    import com.example.myprogress.app.Entites.CaloriesIntake;
+    import com.example.myprogress.app.Entites.appUser;
+    import com.example.myprogress.app.Exceptions.FieldIncorrectException;
+    import com.example.myprogress.app.Repositories.CaloriesIntakeDayRepository;
 
 // This class is used to interact with the database
 @Service

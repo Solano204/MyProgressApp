@@ -21,12 +21,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.example.myprogress.app.Entites.InfoRegister;
 import com.example.myprogress.app.Entites.appUser;
 import com.example.myprogress.app.Entites.infoLogged;
+import com.example.myprogress.app.Exceptions.FieldIncorrectException;
+import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.MessagesFinal;
 import com.example.myprogress.app.LoginService.AppLogin;
 import com.example.myprogress.app.LoginService.FacebookLogin;
 import com.example.myprogress.app.LoginService.GoogleLogin;
 import com.example.myprogress.app.LoginService.Login;
 import com.example.myprogress.app.LoginService.LoginGeneral;
+import com.example.myprogress.app.RedisService.TokenService;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 import com.example.myprogress.app.Repositories.FaceUserRepository;
 import com.example.myprogress.app.Repositories.GoogleUserRepository;
@@ -38,24 +41,34 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 // THIS CLASS CREATE THE TOKEN, And How extends of this class UserNameEtc is a special class and automacally will execute only in the url login
 public class AuthenticationStart extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
-    private BuildToken buildToken;
+    private final AuthenticationManager authenticationManager;
+    private final BuildToken buildToken;
     private final LoginGeneral loginGeneral;
-    private AppUserRepository appUserRepository;
-    private appUser currentUser;
+    private final AppUserRepository appUserRepository;
     private final MessagesFinal  messagesFinal;
+    private final TokenService tokenService;
+    private final GenerateResponse generateResponse;
+    
+    @Builder.Default
+    private appUser currentUser;
 
-    public AuthenticationStart(AuthenticationManager authenticationManager, BuildToken buildToken,
-            AppUserRepository appUserRepository, LoginGeneral loginGeneral, MessagesFinal messagesFinal) {
-        this.appUserRepository = appUserRepository;
-        this.loginGeneral = loginGeneral;
+    public AuthenticationStart(AuthenticationManager authenticationManager, BuildToken buildToken, LoginGeneral loginGeneral, AppUserRepository appUserRepository, MessagesFinal messagesFinal, TokenService tokenService, GenerateResponse generateResponse) {
         this.authenticationManager = authenticationManager;
+        this.generateResponse = generateResponse;
         this.buildToken = buildToken;
+        this.loginGeneral = loginGeneral;
+        this.appUserRepository = appUserRepository;
         this.messagesFinal = messagesFinal;
+        this.tokenService = tokenService;
+        
     }
+
 
     /* The request contains the json or user's login information was sent */
     @Override
@@ -63,23 +76,24 @@ public class AuthenticationStart extends UsernamePasswordAuthenticationFilter {
             throws AuthenticationException {
         String userName = "";
         String password = "";
-
+                System.out.println("AuthenticationStart");
         try {
             currentUser = new ObjectMapper().readValue(request.getInputStream(), appUser.class); // Here the json was
                                                                                                  // sent
             // that
             // contains user's
             // information
-            // I mapping it to a object
+            // I mapping i                                                                                              t to a object
             // of
             // the have (USER)
             userName = currentUser.getUser();
             password = currentUser.getPassWord();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new FieldIncorrectException("Password or user incorrect");
         }
         validaExisting(currentUser);
+        
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userName,
                 password); // Here I save the password and user of the user to send and will be check if
@@ -101,34 +115,23 @@ public class AuthenticationStart extends UsernamePasswordAuthenticationFilter {
                 .getPrincipal(); // Here I get the DetailUser returned by Class ValidateToken
         String userName = userGet.getUsername();
 
-        String accessToken = buildToken.generateToken(userName, 3600000);
-        String refreshToken = buildToken.generateToken(userName, (7 * 24 * 60 * 60 * 1000));
-        response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + accessToken);
-        response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + refreshToken);
+        
         Map<String, Object> body = new HashMap<>();
-        body.put("token", accessToken);
-        body.put("RefreshToken", refreshToken);
-        appUser user2 = loginGeneral.getUserLoged(currentUser);
-        messagesFinal.fillMapInformation(body, user2);
+        generateResponse.generateResponse(currentUser, body);
+        response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + generateResponse.getToken());
+        response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + generateResponse.getRefreshToken());
         ResponseEntity.status(HttpStatus.CREATED).body(body);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType(VariablesGeneral.CONTENT_TYPE); // i give the message in format JSON
-        // Collection<? extends GrantedAuthority> listRoles =
-        // authResult.getAuthorities(); // I get user's permissions
-        /// Claims claims = Jwts.claims().add("authorities", new
-        // ObjectMapper().writeValueAsString(listRoles)).build();// Hee I add the roles
-        // in the token
-        // Here Add information in the token
-        // response = buildToken.generateResponseFinal(response, userName, null);
     }
 
     // The validation was unsucess
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
+         AuthenticationException failed) throws IOException, ServletException {
         Map<String, String> body = new HashMap<>();
         body.put("message", "Error en el user name or password ");
         body.put("error", failed.getMessage());

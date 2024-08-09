@@ -31,7 +31,7 @@ public sealed abstract class Login permits AppLogin, FacebookLogin, GoogleLogin 
         // Here I'll do the login the user and get the data registered previous in its old or exiting login or account 
         return true;
     }
-
+    
 
     // return false if the email Not exists and was succesful the Register or the
     // register

@@ -102,6 +102,10 @@ public class GeneratorDataUser {
         if (bmi < 29.5) {
             statuHealth = "Pasado de peso";
         }
+
+        if (bmi > 29.5) {
+            statuHealth = "Pasado de peso";
+        }
         infoLoged.setStateHealth(statuHealth);
     };
 

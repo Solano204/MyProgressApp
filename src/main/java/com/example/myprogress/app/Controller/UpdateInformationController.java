@@ -16,30 +16,32 @@ import com.example.myprogress.app.Entites.appUser;
 import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
+import com.example.myprogress.app.FeauturesServices.RecipesService;
+import com.example.myprogress.app.FeauturesServices.RoutineService;
+import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.GeneratorDataUser;
+import com.example.myprogress.app.RedisService.TokenService;
 import com.example.myprogress.app.updateInformationService.caloriesIntakeService;
 import com.example.myprogress.app.updateInformationService.updateInformationUserService;
 import com.example.myprogress.app.validations.ValidationOnlyRegisterGroup;
 
 import jakarta.validation.Valid;
-
+import lombok.Data;
+@Data 
 @RequestMapping("/updateInformation")
 @RestController
 public class UpdateInformationController {
 
-    GeneratorDataUser generatorDataUser;
-    updateInformationUserService updateInformationUserService;
+    private final GeneratorDataUser generatorDataUser;
+    private final updateInformationUserService updateInformationUserService;
     private final caloriesIntakeService caloriesIntakeService;
+    private final  TokenService tokenService;
+    private final GenerateResponse generateResponse;
+    private final RoutineService routineService;
+    private final RecipesService recipesService;
 
-    public UpdateInformationController(GeneratorDataUser generatorDataUser,
-            updateInformationUserService updateInformationUserService, caloriesIntakeService caloriesIntakeService) {
-        this.generatorDataUser = generatorDataUser;
-        this.caloriesIntakeService = caloriesIntakeService;
-        this.updateInformationUserService = updateInformationUserService;
-    }
 
-    // lacked of it send the data the user related with its progress, Right now the
-    // new user now are registered in their own table(User,email,pas,type)
+    // This method change the user
     @PostMapping("/ChangeData/{newUser}")
     public ResponseEntity<?> changeData(
             @Valid @RequestBody appUser user,
@@ -54,8 +56,13 @@ public class UpdateInformationController {
         if (updateInformationUserService.changeUser(user, newUser)) {
             // Here I get the new information with the new user
             caloriesIntakeService.changeDocumentId(user.getUser(), newUser);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(updateInformationUserService.getDataUpdated(newUser, user.getTypeAuthentication()));
+            routineService.updateUserInRoutines(user.getUser(), newUser);
+            recipesService.updateUserInRecipes(user.getUser(), newUser);
+            tokenService.deleteCurrentToken(user.getUser());
+            Map<String, Object> body = new HashMap<>();
+            user.setUser(newUser);
+            generateResponse.generateResponse(user, body);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(body);
         }
         throw new UnsuccessfulRegisterException("The user couldn't be updated "); // throw an exception
     }
@@ -93,13 +100,17 @@ public class UpdateInformationController {
         
         if (updateInformationUserService.changePassword(newPass, user, oldPass) != 0) {
             // Here I get the new information with the new user
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(updateInformationUserService.getDataUpdated(user, typeAuthentication));
+
+            appUser appUser = updateInformationUserService.getDataUpdated(user, typeAuthentication);
+            return ResponseEntity.status(HttpStatus.CREATED).body(appUser);
         }
 
         throw new UnsuccessfulRegisterException("No se pudo cambiar el password "); // throw an exception
     }
 
+
+
+    // This method to delete the user
     @DeleteMapping("/deleteUser")
     public ResponseEntity<?> deleteUser(
             @Valid @RequestBody appUser user) { // I put the app User because this is the entity that has all
@@ -107,6 +118,9 @@ public class UpdateInformationController {
                                                 // (inclusive the password)
         if (updateInformationUserService.deleteUser(user)) {
             caloriesIntakeService.deleteById(user.getUser());
+            tokenService.deleteCurrentToken(user.getUser());
+            routineService.deleteRoutinesByUser(user.getUser());
+            recipesService.deleteRecipesByUser(user.getUser());
             // Here I get the new information with the new user
             return ResponseEntity.status(HttpStatus.OK)
                     .body("User deleted successfully");

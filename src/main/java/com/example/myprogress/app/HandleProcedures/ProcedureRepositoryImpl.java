@@ -38,7 +38,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         query.registerStoredProcedureParameter("in_success", Boolean.class, ParameterMode.OUT);
         query.setParameter("email", email);
         query.execute();
-        return (Boolean) query.getOutputParameterValue("in_success");
+            return (Boolean) query.getOutputParameterValue("in_success");
     }
 
     @Override
@@ -240,7 +240,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         query.registerStoredProcedureParameter("newUser", String.class, ParameterMode.IN);
         // Register output parameter
         query.registerStoredProcedureParameter("in_success", Boolean.class, ParameterMode.OUT);
-
+        
         // Set input parameters
         query.setParameter("userOld", user.getUser());
         query.setParameter("newUser", newUser);

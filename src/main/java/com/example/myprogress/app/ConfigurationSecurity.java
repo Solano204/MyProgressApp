@@ -1,61 +1,81 @@
 package com.example.myprogress.app;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.MessagesFinal;
 import com.example.myprogress.app.LoginService.LoginGeneral;
+import com.example.myprogress.app.RedisService.TokenService;
 import com.example.myprogress.app.RegisterService.RegisterGeneral;
 import com.example.myprogress.app.Repositories.AppUserRepository;
+import com.example.myprogress.app.SpringGoogle.CustomAuthenticationSuccessHandler;
+import com.example.myprogress.app.SpringGoogle.CustomTokenValidationFilter;
 import com.example.myprogress.app.SpringSecurity.AuthenticationStart;
 import com.example.myprogress.app.SpringSecurity.BuildToken;
-import com.example.myprogress.app.SpringSecurity.RegisterSecurity;
 import com.example.myprogress.app.SpringSecurity.ValidateToken;
 import com.example.myprogress.app.updateInformationService.caloriesIntakeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 
 @Configuration
+@Data
 @EnableMethodSecurity(prePostEnabled = true)
 public class ConfigurationSecurity {
 
     // Here I configure the authentication
     private final AuthenticationConfiguration authenticationConfiguration;
     private final BuildToken buildToken;
-    private final caloriesIntakeService caloriesIntakeService;
     private final LoginGeneral loginGeneral;
-    private final RegisterGeneral registerGeneral;
     private final AppUserRepository repósitory;
     private final MessagesFinal messagesFinal;
+    private final OAuth2AuthorizedClientService clientService;
+    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService;
+    private final CustomAuthenticationSuccessHandler redirect;
+    private final TokenService tokenService;
+    private final GenerateResponse generateResponse;
+    private final LogoutHandler logoutHandler;
+    private final List<String> urls = List.of(
+        "/login", 
+        "/Register/App/User",
+        "/Authentication/SuccessfulAuthentication",
+        "/Register/Google/User",
+        "//RefreshToken",
+        "/Login/Google/User",
+        "/oauth2/authorization/**"
+    );
 
-    public ConfigurationSecurity(AuthenticationConfiguration authenticationConfiguration, BuildToken buildToken,
-            caloriesIntakeService caloriesIntakeService, LoginGeneral loginGeneral, RegisterGeneral registerGeneral,
-            AppUserRepository repósitory, MessagesFinal messagesFinal) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.buildToken = buildToken;
-        this.messagesFinal = messagesFinal;
-        this.caloriesIntakeService = caloriesIntakeService;
-        this.registerGeneral = registerGeneral;
-        this.loginGeneral = loginGeneral;
-        this.repósitory = repósitory;
-    }
+
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
@@ -68,24 +88,42 @@ public class ConfigurationSecurity {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.POST, "/login/User").permitAll()
-                .requestMatchers(HttpMethod.POST, "/register/User").permitAll()
-                .anyRequest().authenticated())
-                .addFilterBefore(
-                        new RegisterSecurity(registerGeneral, caloriesIntakeService, buildToken, encryptPasswordUser()),
-                        UsernamePasswordAuthenticationFilter.class) // Add before an existing filter
-                .addFilter(new AuthenticationStart(authenticationManager(), buildToken, repósitory, loginGeneral, messagesFinal))
-                .addFilter(new ValidateToken(authenticationManager())) // Add
-                                                                                                              // before
-                                                                                                              // an
-                                                                                                              // existing
-                                                                                                              // filter
-                .csrf(config -> config.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configure CORS
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        return http
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers(urls.toArray(new String[0])).permitAll()
+            /* 
+            .requestMatchers("/login").permitAll()
+            .requestMatchers("/Register/App/User").permitAll()
+            .requestMatchers("/Authentication/SuccessfulAuthentication").permitAll()
+            .requestMatchers("/Register/Google/User").permitAll()
+            .requestMatchers("/Login/Google/User").permitAll()
+            .requestMatchers("/oauth2/authorization/**").permitAll()
+            */
+            .anyRequest().authenticated())
+
+            // In this part is to validate the Login in facebook or Google
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint // I get the information of the user from Google
+                                .userService(customOAuth2UserService)).successHandler(redirect)) // Here I pass the service charge save the
+                                                                        // object user in the session or general context
+                // Here I add new filter to make my logic, because the user and the has been authenticated
+                //.addFilter(new CustomTokenValidationFilter(authenticationManager(), clientService))
+                //.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilter(new AuthenticationStart(authenticationManager(), buildToken, loginGeneral, repósitory, messagesFinal, tokenService,generateResponse))
+        .addFilter(new ValidateToken(authenticationManager(), tokenService))
+
+
+        //This part is to handle about the logout
+        .logout(logout ->
+                        logout.logoutUrl("/AdiosApp") // Here I specify the page to logout and I add the logout handler
+                                .addLogoutHandler(logoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                )
+    //.cors(cors -> cors.configurationSource(corsConfigurationSource())) // Hability the config to accept one
+                                                                                   // frontedn in my backend
+        .csrf(config -> config.disable())
+        .build();
     }
 
     // C:\Maven\apache-maven-3.8.6\bin).
@@ -94,7 +132,7 @@ public class ConfigurationSecurity {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(Arrays.asList("*")); // // Allow all origins
+        config.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:5500")); // // Allow all origins
         config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT")); // Here i specify the type of the
                                                                                  // allowed to query
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));// This specifies which HTTP headers

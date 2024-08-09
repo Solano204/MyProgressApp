@@ -10,5 +10,5 @@ import com.example.myprogress.app.Entites.CaloriesIntake;
 @Repository
 public interface CaloriesIntakeDayRepository extends MongoRepository<CaloriesIntake, String>{
 
-
+    
 }
