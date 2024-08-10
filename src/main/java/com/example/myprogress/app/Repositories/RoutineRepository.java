@@ -11,6 +11,7 @@ import com.example.myprogress.app.Entites.Routine;
 
 public interface RoutineRepository extends MongoRepository<Routine, String> {
 
+    List<Routine> findAllByUser(String user);
+    Routine findByUserAndNameRoutine(String user, String nameRoutine);
 
-    List<Routine> findByUser(String user);
 }

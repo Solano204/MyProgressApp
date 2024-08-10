@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 @Document("Routines")
 @Data
-public class    Routine {
+public class Routine {
 
     @Id
     @Field(name = "_id")

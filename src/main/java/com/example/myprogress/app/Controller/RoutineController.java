@@ -50,7 +50,7 @@ public class RoutineController {
  @GetMapping("/GetRoutine")
     public ResponseEntity<?> getRoutine(@RequestParam String nameRoutine,@RequestParam String user) { 
      if(routineService.getRoutine(nameRoutine, user) != null) {
-         return ResponseEntity.status(HttpStatus.CREATED).body(getRoutine(nameRoutine, user));
+         return ResponseEntity.status(HttpStatus.CREATED).body(routineService.getRoutine(nameRoutine, user));
      }  
      throw new FieldIncorrectException("Error al obtener la rutina");         
  }

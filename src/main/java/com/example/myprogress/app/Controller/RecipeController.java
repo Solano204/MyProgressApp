@@ -37,7 +37,7 @@ public class RecipeController {
     // Method to add a new Recipe
     @PostMapping("/AddNewRecipe")
     public ResponseEntity<?> addNewRecipe(@Valid @RequestBody Recipe newRecipe) {
-        if (recipeService.saveRecipe(newRecipe) != null) {
+            if (recipeService.saveRecipe(newRecipe) != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Receta creada exitosamente");
         }
         throw new FieldIncorrectException("La receta no pudo ser creada");
@@ -72,7 +72,7 @@ public class RecipeController {
         if (recipe != null) {
             return ResponseEntity.status(HttpStatus.OK).body(recipe);
         }
-        throw new FieldIncorrectException("Error al obtener la receta");
+        throw new FieldIncorrectException("El usuario no tiene recetas");
     }
 
     // Method to add a new utensil to the list

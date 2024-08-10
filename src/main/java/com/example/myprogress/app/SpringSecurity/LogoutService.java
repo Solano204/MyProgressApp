@@ -90,10 +90,14 @@ public class LogoutService implements LogoutHandler {
       return false;
     }
 
+    if (request.getRequestURI().equalsIgnoreCase("/RefreshToken")) {
+     return true; 
+    }
+
     Token currentToken = tokenRepository.getLastToken();
     // Validate if the token is valid (not was revoked )
     if (currentToken != null) {
-      if (currentToken.getToken().equals(token)) {
+      if (currentToken.getToken().equals(token) ) {
         currentUser = "";
         return true; // The token is valid
       }

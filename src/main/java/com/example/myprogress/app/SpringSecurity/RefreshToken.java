@@ -25,11 +25,12 @@ public class RefreshToken {
     
   public void refreshToken(
     HttpServletRequest request, HttpServletResponse response, @RequestBody appUser user) throws IOException {
-
-
         if(request != null && validateToken.ValidateToken(request)){
         Map<String, Object> body = new HashMap<>();
+        String header = request.getHeader(VariablesGeneral.AUTHORIZATION);
+        String token = header.replace(VariablesGeneral.HEADER_TOKEN, "");
         generateResponse.generateResponse(user, body);
+        body.put("RefreshToken", token); // i must not modify the refresh token only the access token
         ResponseEntity.status(HttpStatus.ACCEPTED).body(body);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

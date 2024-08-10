@@ -9,6 +9,7 @@ import com.example.myprogress.app.Entites.Routine;
 
 public interface RecipesRepository   extends MongoRepository<Recipe, String>  {
    
-    List<Recipe> findByUser(String user);
+    List<Recipe> findByUser(String user);  
+    Recipe findByUserAndNameRecipe(String user, String nameRecipe);
 
 }

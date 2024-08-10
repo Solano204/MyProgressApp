@@ -47,7 +47,9 @@ public class ValidateToken extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         
-
+                   // Skip token validation for certain paths
+        
+            
             try{
             validateToken(request, response, chain);
             // Create an Authentication token and set it in the SecurityContext
@@ -64,7 +66,7 @@ public class ValidateToken extends BasicAuthenticationFilter {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(VariablesGeneral.CONTENT_TYPE);
             }
-        }
+            }
 
 
     public void validateToken(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -86,15 +88,26 @@ public class ValidateToken extends BasicAuthenticationFilter {
          
             Token currentToken = tokenService.getLastToken();
             // Validate if the token is valid (not was revoked)
+            String requestURI = request.getRequestURI();
+
             if ( currentToken != null) {
-                if (!currentToken.getToken().equals(token)) {
+                if (!shouldSkipValidation(requestURI) && !currentToken.getToken().equals(token)) {
                     throw new JwtException("Token revoked");
                 }
             }else{
                 throw new FieldIncorrectException("Token revoked");
             }
+}
 
-    
+private boolean shouldSkipValidation(String requestURI) {
+    // List of endpoints to skip
+    String[] pathsToSkip = {"/RefreshToken"}; // Adjust paths as needed
+    for (String path : pathsToSkip) {
+        if (requestURI.matches(path.replace("**", ".*"))) {
+            return true;
+        }
+    }
+    return false;
 }
 
 }
