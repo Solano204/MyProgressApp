@@ -1,0 +1,73 @@
+Have several type of inherence in java  JPA
+
+-- THE FIRS IS USING 
+1. SINGLE_TABLE Inheritance Strategy
+In the SINGLE_TABLE strategy, a single table is used to store data for the entire class hierarchy. All fields from the superclass and subclasses are stored in one table, and a discriminator column is used to distinguish between different subclasses.
+
+Example :
+id	user_type	user_name	email	app_specific_field	face_specific_field
+1	APP_USER	appUser1	app1@example.com	App Specific Data	NULL
+2	FACE_USER	faceUser1	face1@example.com	NULL	Face Specific Data
+
+
+-- THE SECOND IS 
+2. TABLE_PER_CLASS Inheritance Strategy
+In the TABLE_PER_CLASS strategy, each class in the inheritance hierarchy is mapped to its own table. Each table contains columns for the fields defined in that class as well as all inherited fields. Each class, including the superclass and all subclasses, has its own table.
+The table for a subclass includes columns for its own fields as well as inherited fields from the superclass.
+Point very important if the super class is abstract the father class wont have its own table, if Isnt abstract the father table will have its own table
+Example:
+
+
+-- THE FATHER CLASS isn't ABSTRACT
+User Table
+id	username	email
+1	john_doe	john@example.com
+AppUser Table
+id	username	email	password
+2	jane_doe	jane@example.com	secret
+FaceUser Table
+id	username	email	facebookId
+3	john_smith	john_smith@example.com	john_fb_id
+
+-- THE FATHER CLASS IS ABSTRACT
+
+id	username	email	password
+1	john_doe	john@example.com	secret
+FaceUser Table
+id	username	email	facebookId
+2	jane_doe	jane@example.com	jane_fb_id
+
+
+
+-- THE THIRD IS
+3. JOINED Inheritance Strategy
+In the JOINED strategy, a table is created for each class in the hierarchy. Subclass tables contain columns for subclass-specific fields, and the superclass table contains columns for shared fields. Queries retrieve data by performing joins between these tables.
+Example:
+
+
+Person Table (Superclass)
+id	name	address
+1	John Doe	123 Main St
+2	Jane Smith	456 Elm St
+
+Employee Table (Subclass)
+id	department
+1	IT
+
+Customer Table (Subclass)
+id	loyaltyLevel
+2	Gold
+
+--THE LAST IS
+4. @MappedSuperclass Inheritance
+In the @MappedSuperclass strategy, the superclass is not an entity and does not have a corresponding table. Instead, it serves as a base class for other entities and provides mapping information that is inherited by its subclasses.
+Example :
+
+app_users Table
+id_user	email_user	type_authentication	password
+1	user1@example.com	APP	pass123
+2	user2@example.com	APP	pass456
+face_users Table
+id_user	email_user	type_authentication	facebook_id
+3	user3@example.com	FACEBOOK	fb123
+4	user4@example.com	FACEBOOK	fb456

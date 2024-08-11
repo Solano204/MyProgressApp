@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth2 Login</title>
+    <style>
+        /* Styling here */
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Login with Google</h1>
+    <p>Click the button below to register or login with Google:</p>
+    <button id="googleLoginButton" onclick="registerUser()">Login with Google</button>
+</div>
+
+<script>
+ async function registerUser() {
+    const userData = {
+        "user": "s1sss2S23",
+        "email": "soSs123s@lsmes.com",
+        "passWord": "123456",
+        "typeAuthentication": "App",
+        "registerInformation": {
+            "name": "Esmeralda",
+            "age": 30,
+            "height": 1.75,
+            "country": "USA",
+            "gender": "Masculino",
+            "levelActivity": "Sedentario",
+            "valueActivity": 2,
+            "goal": "Mantener Peso",
+            "startingWeight": 75,
+            "currentWeight": 75,
+            "endWeight": 80
+        }
+    };
+
+    try {
+        const response = await fetch('http://localhost:8080/register/User', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('User registered successfully:', result);
+            // Handle the response data as needed, e.g., save tokens, update UI, etc.
+        } else {
+            console.error('Failed to register user:', response.statusText);
+            // Handle errors as needed
+        }
+    } catch (error) {
+        console.error('Error during registration:', error);
+    }
+}
+
+// Call the function to register the user
+registerUser();
+</script>
+
+</body>
+</html>
