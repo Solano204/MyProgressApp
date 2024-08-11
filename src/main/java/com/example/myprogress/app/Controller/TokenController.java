@@ -32,13 +32,9 @@ import lombok.Data;
 @RestController
 @Data
 public class TokenController {
-    private final CacheManager cacheManager;
     private final RefreshToken refreshToken;
-    @PatchMapping("/{name}")
-    public void evictCache(@PathVariable String name) {
-        this.cacheManager.getCache(name).clear();
-    }
 
+    // This method will be executed when the client I need a new access token
     @GetMapping("/RefreshToken")
     public void successAuthentication(HttpServletRequest request, HttpServletResponse response, @RequestBody appUser user)
             throws IOException {

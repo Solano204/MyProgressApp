@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy = LogicValidateAuthentication.class) // Here I specific which class give the logic to validate the
-                                                       // type of
-// the field
-@Retention(RetentionPolicy.RUNTIME) // Allow validate in time execution
-@Target({ ElementType.TYPE, ElementType.FIELD }) // I specify that type of element will use this annotation
+
+
+// Annotation relationed in the case of the class AuthenticationUser.java
+@Constraint(validatedBy = LogicValidateAuthentication.class) 
+@Retention(RetentionPolicy.RUNTIME) 
+@Target({ ElementType.TYPE, ElementType.FIELD }) 
 public @interface AuthenticationUser {
     String message() default " Ingreso incorrecto por favor verifique sus credenciales";
 

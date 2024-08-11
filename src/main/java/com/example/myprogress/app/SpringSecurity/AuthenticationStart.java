@@ -29,7 +29,6 @@ import com.example.myprogress.app.LoginService.FacebookLogin;
 import com.example.myprogress.app.LoginService.GoogleLogin;
 import com.example.myprogress.app.LoginService.Login;
 import com.example.myprogress.app.LoginService.LoginGeneral;
-import com.example.myprogress.app.RedisService.TokenService;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 import com.example.myprogress.app.Repositories.FaceUserRepository;
 import com.example.myprogress.app.Repositories.GoogleUserRepository;
@@ -52,20 +51,18 @@ public class AuthenticationStart extends UsernamePasswordAuthenticationFilter {
     private final LoginGeneral loginGeneral;
     private final AppUserRepository appUserRepository;
     private final MessagesFinal  messagesFinal;
-    private final TokenService tokenService;
     private final GenerateResponse generateResponse;
     
     @Builder.Default
     private appUser currentUser;
 
-    public AuthenticationStart(AuthenticationManager authenticationManager, BuildToken buildToken, LoginGeneral loginGeneral, AppUserRepository appUserRepository, MessagesFinal messagesFinal, TokenService tokenService, GenerateResponse generateResponse) {
+    public AuthenticationStart(AuthenticationManager authenticationManager, BuildToken buildToken, LoginGeneral loginGeneral, AppUserRepository appUserRepository, MessagesFinal messagesFinal, GenerateResponse generateResponse) {
         this.authenticationManager = authenticationManager;
         this.generateResponse = generateResponse;
         this.buildToken = buildToken;
         this.loginGeneral = loginGeneral;
         this.appUserRepository = appUserRepository;
         this.messagesFinal = messagesFinal;
-        this.tokenService = tokenService;
         
     }
 
@@ -117,6 +114,7 @@ public class AuthenticationStart extends UsernamePasswordAuthenticationFilter {
 
         
         Map<String, Object> body = new HashMap<>();
+        generateResponse.setGenerateRefreshToken(true); // Here I active the variable to generate the refresh token because is a login And I need to refreshToken
         generateResponse.generateResponse(currentUser, body);
         response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + generateResponse.getToken());
         response.addHeader(VariablesGeneral.AUTHORIZATION, VariablesGeneral.HEADER_TOKEN + generateResponse.getRefreshToken());

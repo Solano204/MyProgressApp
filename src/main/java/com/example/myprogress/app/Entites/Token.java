@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Token implements Serializable {
-    private String token;
-    private String user;
-}
+
+    public class Token implements Serializable {
+        private String token;
+        private String user;
+    }

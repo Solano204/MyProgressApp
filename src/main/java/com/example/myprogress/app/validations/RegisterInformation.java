@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+
+// Annotation relationed in the case of the class RegisterInformation.java
 @Constraint(validatedBy = LogicValidateRegister.class) // Here I specific which class give the logic to validate the type of
                                                 // the field
 @Retention(RetentionPolicy.RUNTIME) // Allow validate in time execution

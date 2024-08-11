@@ -70,7 +70,22 @@ db.createCollection("Recipes", {
   });
 
 
- db.Recipes.createIndex(
-    { _id: 1, user: 1 }, // Compound index on _id and user
-    { name: "id_user_index" } // Optional: index name
-  )
+  db.Recipes.createIndex(
+    { nameRecipe: 1, user: 1 },
+    { unique: true }
+)
+
+  db.Recipes.insertOne({
+    nameRecipe: 'Gsscamole',
+    user: 'younowjs33',
+    Utensils: [ 'bowl', 'fork' ],
+    Ingredients: { avocado: '2', lime: '1', salt: 'to taste' },
+    Steps: {
+      '1': 'Mash the avocados.',
+      '2': 'Add lime and salt.',
+      '3': 'Mix well.'
+    },
+    AproximateTime: '15 minutes',
+    anyRecomendation: 'Serve with tortilla chips.',
+    _class: 'com.example.myprogress.app.Entites.Recipe'
+  })

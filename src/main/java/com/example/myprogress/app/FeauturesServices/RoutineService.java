@@ -100,7 +100,7 @@ public boolean deleteExerciseByName(String routineName, String user, String exer
     // Delete a routine for a user
     public void deleteRoutine(String routineName, String user) {
         try {
-            routineRepository.deleteById(user.concat("/" + routineName));
+            routineRepository.deleteByUserAndNameRoutine(user, routineName);
         } catch (Exception e) {
             throw new FieldIncorrectException("Failed to delete routine");
         }

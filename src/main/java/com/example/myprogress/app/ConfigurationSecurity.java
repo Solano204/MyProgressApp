@@ -35,7 +35,7 @@ import org.springframework.web.filter.CorsFilter;
 import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.MessagesFinal;
 import com.example.myprogress.app.LoginService.LoginGeneral;
-import com.example.myprogress.app.RedisService.TokenService;
+import com.example.myprogress.app.RedisService.TokenServices;
 import com.example.myprogress.app.RegisterService.RegisterGeneral;
 import com.example.myprogress.app.Repositories.AppUserRepository;
 import com.example.myprogress.app.SpringGoogle.CustomAuthenticationSuccessHandler;
@@ -47,6 +47,8 @@ import com.example.myprogress.app.updateInformationService.caloriesIntakeService
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
+import com.example.myprogress.app.RedisService.TokenServices;
+
 
 @Configuration
 @Data
@@ -62,9 +64,10 @@ public class ConfigurationSecurity {
     private final OAuth2AuthorizedClientService clientService;
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler redirect;
-    private final TokenService tokenService;
+    private final TokenServices tokenService;
     private final GenerateResponse generateResponse;
     private final LogoutHandler logoutHandler;
+    private final TokenServices tokenService2;
     private final List<String> urls = List.of(
         "/login", 
         "/Register/App/User",
@@ -110,8 +113,8 @@ public class ConfigurationSecurity {
                 // Here I add new filter to make my logic, because the user and the has been authenticated
                 //.addFilter(new CustomTokenValidationFilter(authenticationManager(), clientService))
                 //.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilter(new AuthenticationStart(authenticationManager(), buildToken, loginGeneral, repósitory, messagesFinal, tokenService,generateResponse))
-        .addFilter(new ValidateToken(authenticationManager(), tokenService))
+        .addFilter(new AuthenticationStart(authenticationManager(), buildToken, loginGeneral, repósitory, messagesFinal,generateResponse))
+        .addFilter(new ValidateToken(authenticationManager(), tokenService2, tokenService2))
 
 
         //This part is to handle about the logout

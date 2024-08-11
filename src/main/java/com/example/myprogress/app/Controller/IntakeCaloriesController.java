@@ -42,8 +42,7 @@ public class IntakeCaloriesController {
     // This method will execute each 24 hours
     @PostMapping("/updateProgress")
     public ResponseEntity<?> updateDataTime(
-            @Validated(ValidationOnlyRegisterGroup.class) @RequestBody appUser user) {
-        // (inclusive the password)
+            @Validated(ValidationOnlyRegisterGroup.class) @RequestBody appUser user) { // Here I active the validation of data linked with the data of process to register because I need that information 
         user.setInfoLogged(new infoLogged());
         int caloriesConsumed = caloriesIntakeService.getById(user.getUser()).getCalorieIntake(); // Here I
                                                                                                  // get the
@@ -69,7 +68,8 @@ public class IntakeCaloriesController {
                                                                      // to Start with a new day
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
-        throw new FieldIncorrectException("The user couldn't be updated "); // throw an exception
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The user couldn't be updated ");
+
     }
 
     // This method will execute each time the user decided add new calories
@@ -81,7 +81,7 @@ public class IntakeCaloriesController {
                                                           // attributes
                                                           // (inclusive the password)
         if (user.equals("notFound") || typeAuthentication.equals("notFound")) {
-             throw new FieldIncorrectException("Sucedio algun error cuando se intento agregar calorias" );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Algun campo esta vacio");
         }
         Map<String, Object> response = new HashMap<>();
         appUser appUser = updateInformationUserService.getDataUpdated(user, typeAuthentication);

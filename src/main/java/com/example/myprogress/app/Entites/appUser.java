@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@AuthenticationUser
+@AuthenticationUser // This annotation will be used to validate the user
 @Builder
 @Table(name = "App_Users")
 public final class appUser extends User implements Serializable {

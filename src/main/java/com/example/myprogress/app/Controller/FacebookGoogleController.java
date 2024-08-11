@@ -23,7 +23,7 @@ import com.example.myprogress.app.Exceptions.UserExistException;
 import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.MessagesFinal;
 import com.example.myprogress.app.LoginService.LoginGeneral;
-import com.example.myprogress.app.RedisService.TokenService;
+import com.example.myprogress.app.RedisService.TokenServices;
 import com.example.myprogress.app.RegisterService.RegisterGeneral;
 import com.example.myprogress.app.Repositories.GoogleUserRepository;
 import com.example.myprogress.app.SpringSecurity.BuildToken;
@@ -38,7 +38,7 @@ import lombok.Data;
 @CrossOrigin(origins = "*")
 public class FacebookGoogleController {
     private final GoogleUserRepository googleUserRepository;
-    private final TokenService tokenService;
+    private final TokenServices tokenService;
     private appUser currentUserToRegisterGF;
     private final BuildToken buildToken;
     private final RegisterGeneral registerGeneral;
@@ -58,7 +58,7 @@ public class FacebookGoogleController {
         String redirectServer;
         currentUserToRegisterGF = user;
         if (user.getTypeAuthentication().equalsIgnoreCase("Google")) {
-            redirectServer = "http://localhost:8080/oauth2/authorization/google";
+            redirectServer = "http://localhost:8080/oauth2/authorization/google"; // I redirect to the Google Server
         }else{
             redirectServer = "http://localhost:8080/oauth2/authorization/facebook";
         }
@@ -73,13 +73,14 @@ public class FacebookGoogleController {
         user.setInfoLogged(new infoLogged());
         
         if (!googleUserRepository.ExistUser(user.getUser())) {
+            
             throw new UserExistException("Lo sentimos Ese usuario no existe");
         }
 
         String redirectServer;
         currentUserToRegisterGF = user;
         if (user.getTypeAuthentication().equalsIgnoreCase("Google")) {
-            redirectServer = "http://localhost:8080/oauth2/authorization/google";
+            redirectServer = "http://localhost:8080/oauth2/authorization/google"; // I redirect to the Google Server
         }else{
             redirectServer = "http://localhost:8080/oauth2/authorization/facebook";
         }
@@ -92,6 +93,7 @@ public class FacebookGoogleController {
         public  ResponseEntity<?> successAuthentication()
                 throws IOException {
                     Map<String, Object> body = new HashMap<>();
+                    generateResponse.setGenerateRefreshToken(true); // Here I active the variable to generate the refresh token because is a login And I need to refreshToken
                     generateResponse.generateResponse(currentUserToRegisterGF, body);
                     return ResponseEntity.status(HttpStatus.CREATED).body(body);
 

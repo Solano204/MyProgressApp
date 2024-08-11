@@ -158,7 +158,6 @@
     <artifactId>jackson-databind</artifactId>
 </dependency>
 
-
 <!-- This is the dependencies to work with http and the trasnlate -->
 <dependency>
     <groupId>com.squareup.okhttp3</groupId>

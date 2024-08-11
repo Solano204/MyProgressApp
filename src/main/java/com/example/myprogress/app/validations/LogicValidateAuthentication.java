@@ -11,6 +11,9 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.experimental.FieldDefaults;
 
+
+
+//This class wil validate that the user has the authentication correctly and that the user is not empty
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 
 public class LogicValidateAuthentication implements ConstraintValidator<AuthenticationUser, appUser > {

@@ -1,6 +1,7 @@
 package com.example.myprogress.app.Entites;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,13 +13,14 @@ import lombok.experimental.FieldDefaults;
 
 
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
-@Document("Routines")
+@Document("Routine")
 @Data
 public class Routine {
 
     @Id
-    @Field(name = "_id")
-    @JsonProperty("nameRoutine")
+    ObjectId id;
+
+    @Field(name = "nameRoutine")
     String nameRoutine;
 
     @Field(name = "user")

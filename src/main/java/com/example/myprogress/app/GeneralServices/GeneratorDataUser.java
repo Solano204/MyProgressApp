@@ -131,6 +131,8 @@ public class GeneratorDataUser {
         //Here I
     }
 
+
+    // Here I update the information of the user generated previously
     public void updateInformationRecommended() {
         infoLoged.setStartingDate(LocalDate.now());
         currentUser.setRegisterInformation(registerInfo);

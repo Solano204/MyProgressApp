@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -18,7 +19,11 @@ import lombok.experimental.FieldDefaults;
 @Data
 public class Recipe implements Serializable {
     @Id
-    @Field(name = "_id")
+    ObjectId id;
+
+
+
+    @Field(name = "nameRecipe")
     String nameRecipe;
 
     @Field(name = "user")

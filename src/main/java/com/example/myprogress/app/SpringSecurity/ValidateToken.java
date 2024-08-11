@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component;
 
 import com.example.myprogress.app.Entites.Token;
 import com.example.myprogress.app.Exceptions.FieldIncorrectException;
-import com.example.myprogress.app.RedisService.TokenService;
+import com.example.myprogress.app.RedisService.TokenServices;
+import com.example.myprogress.app.RedisService.TokenServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -35,11 +36,13 @@ import jakarta.servlet.http.HttpServletResponse;
 // THIS CLASS IS TO VALIDATE IF THE TOKEN IS CORRECT
 public class ValidateToken extends BasicAuthenticationFilter {
 
-    private final TokenService tokenService;
+    private final TokenServices tokenService;
     private String currentUserName;
+    private final TokenServices tokenServices;
 
-    public ValidateToken(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public ValidateToken(AuthenticationManager authenticationManager, TokenServices tokenService, TokenServices tokenServices) {
         super(authenticationManager);
+        this.tokenServices = tokenServices;
         this.tokenService = tokenService;
     }
 
@@ -53,7 +56,7 @@ public class ValidateToken extends BasicAuthenticationFilter {
             try{
             validateToken(request, response, chain);
             // Create an Authentication token and set it in the SecurityContext
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     currentUserName, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);  
              chain.doFilter(request, response); // I sent the next level or the next filter
@@ -86,12 +89,12 @@ public class ValidateToken extends BasicAuthenticationFilter {
                 throw new FieldIncorrectException("Token revoked");
             }
          
-            Token currentToken = tokenService.getLastToken();
+            Token currentToken = tokenServices.getTokenByUser(currentUserName);
             // Validate if the token is valid (not was revoked)
             String requestURI = request.getRequestURI();
 
             if ( currentToken != null) {
-                if (!shouldSkipValidation(requestURI) && !currentToken.getToken().equals(token)) {
+                if (!shouldSkipValidation(requestURI) && !tokenServices.getTokenByUser(currentUserName).getToken().equals(token)) {
                     throw new JwtException("Token revoked");
                 }
             }else{

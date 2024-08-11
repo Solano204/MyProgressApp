@@ -9,6 +9,8 @@ import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 
 import jakarta.validation.ConstraintValidatorContext;
 
+
+// This class will validate all fields of the new user to Register
 @Component
 public class RegisterGeneralValidations {
 
@@ -16,8 +18,6 @@ public class RegisterGeneralValidations {
     List<String> listLevelActivities;
     List<String> genders;
 
-    
-    
     public RegisterGeneralValidations() {
         listGoals = List.of("Perder Peso", "Mantener Peso", "Ganar Peso");
         listLevelActivities = List.of("Sedentario", "Un Poco Activo", "Moderadamente Activo", "Bastante Activo", "Super Activo");

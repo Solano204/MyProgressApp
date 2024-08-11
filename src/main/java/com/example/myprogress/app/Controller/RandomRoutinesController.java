@@ -22,7 +22,8 @@ public class RandomRoutinesController {
     if(routine != null) {
         return ResponseEntity.status(HttpStatus.CREATED).body(routine);
     }  
-    throw new FieldIncorrectException("Error al generar la rutina");         
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al generar la rutina");
+
 }
 
 
@@ -32,7 +33,8 @@ public class RandomRoutinesController {
     if(routine != null) {
         return ResponseEntity.status(HttpStatus.CREATED).body(routine);
     }  
-    throw new FieldIncorrectException("Error al generar la rutina");         
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al generar la rutina");
+
 }
 
 }

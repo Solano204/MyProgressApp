@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.example.myprogress.app.Entites.Token;
 import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 import com.example.myprogress.app.Exceptions.PasswordIncorrect;
-import com.example.myprogress.app.RedisService.TokenService;
+import com.example.myprogress.app.RedisService.TokenServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,9 +37,9 @@ import lombok.RequiredArgsConstructor;
 @Lazy
 public class LogoutService implements LogoutHandler {
 
-  private final TokenService tokenRepository;
+  private final TokenServices tokenRepository;
 
-  public LogoutService(TokenService tokenRepository) {
+  public LogoutService(TokenServices tokenRepository) {
     this.tokenRepository = tokenRepository;
   }
 
@@ -53,7 +53,8 @@ public class LogoutService implements LogoutHandler {
         return;
       }
 
-      tokenRepository.deleteCurrentToken(currentUser); // Here I REVOKE The token to no longer access with that token
+      tokenRepository.deleteToken(currentUser); // Here I REVOKE The token to no longer access with that token
+      
       SecurityContextHolder.clearContext(); // AND i clean the contextHolder
       generateResponse("Deslogiado con exito", response);
 
@@ -94,11 +95,10 @@ public class LogoutService implements LogoutHandler {
      return true; 
     }
 
-    Token currentToken = tokenRepository.getLastToken();
+    Token currentToken = tokenRepository.getTokenByUser(currentUser);
     // Validate if the token is valid (not was revoked )
     if (currentToken != null) {
       if (currentToken.getToken().equals(token) ) {
-        currentUser = "";
         return true; // The token is valid
       }
     }

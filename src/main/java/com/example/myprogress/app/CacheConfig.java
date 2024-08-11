@@ -27,8 +27,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Configuration
-@EnableCaching // This enables Spring's annotation-driven cache management capability
 public class CacheConfig {
     public static final String FIRST_URL = "UserTemp";
     public static final String SECOND_URL = "UserTemp2";

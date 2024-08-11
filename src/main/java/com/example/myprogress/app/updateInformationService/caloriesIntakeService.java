@@ -16,7 +16,8 @@ package com.example.myprogress.app.updateInformationService;
     import com.example.myprogress.app.Exceptions.FieldIncorrectException;
     import com.example.myprogress.app.Repositories.CaloriesIntakeDayRepository;
 
-// This class is used to interact with the database
+
+// This service will manage the collection caloriesIntake, all information linked with the user's progress
 @Service
 public class caloriesIntakeService {
 
@@ -44,7 +45,8 @@ public class caloriesIntakeService {
         caloriesIntakeRepository.deleteById(existingDataOpt.getId());
     }
 
-    // Here I restart the calories each 24
+
+    // Here I have to update the doc calorieIntake related with the user
     public void changeDocumentId(String oldId, String newId) {
         // 1. Find the original document
         Query query = new Query(Criteria.where("_id").is(oldId));
@@ -55,6 +57,9 @@ public class caloriesIntakeService {
             mongoTemplate.remove(query, "caloriesIntake");
         }
     }
+
+
+    // Here I update the calorie intake of the user
     public CaloriesIntake updateCaloriesIntake(String idUser, CaloriesIntake updatedData) {
         Query query = new Query(Criteria.where("_id").is(idUser)); // Find document by idUser
         Update update = new Update();
@@ -62,7 +67,6 @@ public class caloriesIntakeService {
         update.set("proteinsConsumed", updatedData.getProteinsConsumed());
         update.set("fatsConsumed", updatedData.getFatsConsumed());
         update.set("carbohydratesConsumed", updatedData.getCarbohydratesConsumed());
-
         return mongoTemplate.findAndModify(query, update, CaloriesIntake.class);
     }
 
@@ -78,7 +82,7 @@ public class caloriesIntakeService {
         existingData.setProteinsConsumed(caloriesIntake.getProteinsConsumed());
         existingData.setFatsConsumed(caloriesIntake.getFatsConsumed());
         existingData.setCarbohydratesConsumed(caloriesIntake.getCarbohydratesConsumed());
-        existingData = updateCaloriesIntake(user.getUser(), existingData);
+        existingData = updateCaloriesIntake(user.getUser(), existingData); 
         verifyState(existingData, user, response);
         return true;
     }

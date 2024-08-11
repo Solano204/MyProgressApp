@@ -52,7 +52,7 @@ db.createCollection("Exercises", {
   })
   
  // Creating the compound index
- db.Routines.createIndex(
-    { _id: 1, user: 1 }, // Compound index on _id and user
-    { name: "id_user_index" } // Optional: index name
-  )
+ db.Routine.createIndex(
+  { nameRoutine: 1, user: 1 },
+  { unique: true }
+)
