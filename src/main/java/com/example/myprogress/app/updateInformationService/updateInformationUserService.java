@@ -119,7 +119,7 @@ public class updateInformationUserService {
         return j;
     }
 
-    public appUser getDataUpdated(String user, String typeAuthentication) {
+    public appUser  getDataUpdated(String user, String typeAuthentication) {
         return appUserRepository.getUserSelected(user, typeAuthentication);
     }
 

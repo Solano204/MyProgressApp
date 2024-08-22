@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.example.myprogress.app.Entites.InfoRegister;
 import com.example.myprogress.app.Entites.User;
 import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.EmailExistException;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Exceptions.UserExistException;

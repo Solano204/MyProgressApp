@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import com.example.myprogress.app.validations.AuthenticationUser;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "App_Users")
 public final class appUser extends User implements Serializable {
+     @Schema(description = "Email address of the user", 
+    example = "1234567", 
+    required = true)
     @Column(name = "Password")
     private String passWord;
 

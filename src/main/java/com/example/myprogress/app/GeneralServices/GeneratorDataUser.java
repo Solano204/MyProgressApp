@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 import com.example.myprogress.app.Entites.InfoRegister;
+import com.example.myprogress.app.Entites.InfosLogged;
 import com.example.myprogress.app.Entites.User;
-import com.example.myprogress.app.Entites.infoLogged;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class GeneratorDataUser {
 
     User currentUser;
     InfoRegister registerInfo;
-    infoLogged infoLoged;
+    InfosLogged infoLoged;
 
     // Here I initialize this class to easily the get the information of the user
     public void getregisterInfo() {

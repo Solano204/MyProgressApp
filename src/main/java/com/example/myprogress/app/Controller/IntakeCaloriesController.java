@@ -13,20 +13,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.myprogress.app.Entites.AuthLoginRequest;
 import com.example.myprogress.app.Entites.CaloriesIntake;
+import com.example.myprogress.app.Entites.InfoRegister;
+import com.example.myprogress.app.Entites.InfosLogged;
+import com.example.myprogress.app.Entites.Token;
+import com.example.myprogress.app.Entites.User;
 import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.updateInformationService.caloriesIntakeService;
 import com.example.myprogress.app.updateInformationService.updateInformationUserService;
+import com.example.myprogress.app.validations.RegisterInformation;
 import com.example.myprogress.app.validations.ValidationOnlyRegisterGroup;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.experimental.FieldDefaults;
+import io.swagger.v3.oas.annotations.Parameter;
 
 @RequestMapping("/updateIntakeCalories")
 @RestController
+@Tag(name = "Manage calorie intake")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class IntakeCaloriesController {
 
@@ -39,11 +52,14 @@ public class IntakeCaloriesController {
         this.updateInformationUserService = updateInformationUserService;
     }
 
+
+    
+     @Hidden
     // This method will execute each 24 hours
     @PostMapping("/updateProgress")
     public ResponseEntity<?> updateDataTime(
             @Validated(ValidationOnlyRegisterGroup.class) @RequestBody appUser user) { // Here I active the validation of data linked with the data of process to register because I need that information 
-        user.setInfoLogged(new infoLogged());
+        user.setInfoLogged(new InfosLogged());
         int caloriesConsumed = caloriesIntakeService.getById(user.getUser()).getCalorieIntake(); // Here I
                                                                                                  // get the
                                                                                                  // total of
@@ -64,7 +80,7 @@ public class IntakeCaloriesController {
         caloriesIntake.setCarbohydratesConsumed(0);
         caloriesIntake.setFatsConsumed(0);
         caloriesIntake.setProteinsConsumed(0);
-            caloriesIntakeService.updateCaloriesIntake(user.getUser(), caloriesIntake); // Here I restart the state of the calories intake
+        caloriesIntakeService.updateCaloriesIntake(user.getUser(), caloriesIntake); // Here I restart the state of the calories intake
                                                                      // to Start with a new day
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
@@ -72,6 +88,43 @@ public class IntakeCaloriesController {
 
     }
 
+
+
+
+    
+    @Operation(
+        summary = "Add Calories Intake",
+        description = "Add calories intake information for a user.",
+        tags = {"Manage calorie intake"},
+        parameters = {
+            @Parameter(name = "user",description = "Insert your username", required = true, example = "younowjs2"),
+            @Parameter(name = "typeAuthentication", description = "Type of authentication", required = true, example = "App")
+        },
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Calories intake data",
+            required = true,
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CaloriesIntake.class)
+            )
+        ),
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Calories intake added successfully",
+                content = @Content(
+                    mediaType = "application/json"
+                )
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "Internal Server Error",
+                content = @Content(
+                    mediaType = "application/json"
+                )
+            )
+        }
+    )
     // This method will execute each time the user decided add new calories
     @PostMapping("/addCalories")
     public ResponseEntity<?> addCalories(

@@ -4,7 +4,6 @@ DELIMITER //
 CREATE PROCEDURE updateUserApp(
 	IN userOld VARCHAR(20),
     IN newUser VARCHAR(20),
-	IN PasswordS VARCHAR (100),
     OUT in_success BOOLEAN
 )
 BEGIN
@@ -27,9 +26,6 @@ BEGIN
         SET in_success = FALSE;
     END IF;
     
-    IF PasswordS IS NULL OR CHAR_LENGTH(PasswordS) = 0 THEN
-        SET in_success = FALSE;
-    END IF;
     
         IF in_success THEN
         -- Perform updates
@@ -37,7 +33,7 @@ BEGIN
         SET
         id_User = newUser
         WHERE
-		id_User = userOld and Password = PasswordS; 
+		id_User = userOld; 
         
         select userOld;
 		UPDATE progress_users

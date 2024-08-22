@@ -96,24 +96,24 @@ public class caloriesIntakeService {
         int currentCars = (user.getInfoLogged().getCurrentCarbohydrates() - caloriesIntake.getCarbohydratesConsumed());
         int currentFats = (user.getInfoLogged().getCurrentFats() - caloriesIntake.getFatsConsumed());
 
-        response.put("StateCalories", (user.getInfoLogged().getCurrentCalories() > caloriesIntake.getCalorieIntake()
-                ? "Le falta consumir " + (Math.abs(currentCalories) + " Para alcanzar su meta de calorias recomendadas")
-                : " Ha consumido " + (Math.abs(currentCalories) + " calorias de mas del limite recomendado ")));
+            response.put("StateCalories", (user.getInfoLogged().getCurrentCalories() > caloriesIntake.getCalorieIntake()
+                    ? "Le falta consumir " + (Math.abs(currentCalories) + " Para alcanzar su meta de calorias recomendadas")
+                    : " Ha consumido " + (Math.abs(currentCalories) + " calorias de mas del limite recomendado ")));
 
-        response.put("StateProtein", (user.getInfoLogged().getCurrentProtein() > caloriesIntake.getProteinsConsumed()
-                ? "Le falta consumir " + (Math.abs(currentProtein) + " Para alcanzar su meta de proteinas recomendadas")
-                : " Ha consumido " + (Math.abs(currentProtein) + " proteinas de mas del limite recomendado ")));
+            response.put("StateProtein", (user.getInfoLogged().getCurrentProtein() > caloriesIntake.getProteinsConsumed()
+                    ? "Le falta consumir " + (Math.abs(currentProtein) + " Para alcanzar su meta de proteinas recomendadas")
+                    : " Ha consumido " + (Math.abs(currentProtein) + " proteinas de mas del limite recomendado ")));
 
-        response.put("StateCarbohydrates",
-                (user.getInfoLogged().getCurrentCarbohydrates() > caloriesIntake.getCarbohydratesConsumed()
-                        ? "Le falta consumir "
-                                + (Math.abs(currentCars) + " Para alcanzar su meta de carbohidratos recomendadas")
-                        : " Ha consumido "
-                                + (Math.abs(currentCars) + " carbohidratos de mas del limite recomendado ")));
+            response.put("StateCarbohydrates",
+                    (user.getInfoLogged().getCurrentCarbohydrates() > caloriesIntake.getCarbohydratesConsumed()
+                            ? "Le falta consumir "
+                                    + (Math.abs(currentCars) + " Para alcanzar su meta de carbohidratos recomendadas")
+                            : " Ha consumido "
+                                    + (Math.abs(currentCars) + " carbohidratos de mas del limite recomendado ")));
 
-        response.put("StateFats", (user.getInfoLogged().getCurrentFats() > caloriesIntake.getFatsConsumed()
-                ? "Le falta consumir " + (Math.abs(currentFats) + " Para alcanzar su meta de grasas recomendadas")
-                : " Ha consumido " + (Math.abs(currentFats) + " grasas de mas del limite recomendado ")));
-    }
+            response.put("StateFats", (user.getInfoLogged().getCurrentFats() > caloriesIntake.getFatsConsumed()
+                    ? "Le falta consumir " + (Math.abs(currentFats) + " Para alcanzar su meta de grasas recomendadas")
+                    : " Ha consumido " + (Math.abs(currentFats) + " grasas de mas del limite recomendado ")));
+        }
 
 }
