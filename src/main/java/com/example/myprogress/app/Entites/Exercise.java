@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +13,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE) 
 @Builder
 @Data
-public class Exercise implements Serializable {
+@AllArgsConstructor
+public class    Exercise implements Serializable {
 
    @JsonProperty("nameExercise")
     @Schema(description = "Name of the exercise", 

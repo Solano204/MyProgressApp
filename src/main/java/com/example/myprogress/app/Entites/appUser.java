@@ -21,11 +21,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "App_Users")
 public final class appUser extends User implements Serializable {
+
      @Schema(description = "Email address of the user", 
-    example = "1234567", 
+    example = "123456", 
     required = true)
     @Column(name = "Password")
     private String passWord;
+
+
 
     // This contructor will be used in the most of the case to create a new user
     public appUser(String idUser, String password, String email, String typeAuthentication) {
@@ -44,6 +47,12 @@ public final class appUser extends User implements Serializable {
     @Override
     public String getUser() {
         return super.getUser();
+    }
+
+    @Override
+    public void setUser(String user) {
+        // TODO Auto-generated method stub
+        super.setUser(user);
     }
 
 

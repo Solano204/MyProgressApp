@@ -76,7 +76,7 @@ public class caloriesIntakeService {
         if (!existingDataOpt.isPresent()) {
             throw new FieldIncorrectException("Happened an error while adding calories");
         }
-        ;
+        
         CaloriesIntake existingData = existingDataOpt.get();
         existingData.setCalorieIntake(caloriesIntake.getCalorieIntake());
         existingData.setProteinsConsumed(caloriesIntake.getProteinsConsumed());

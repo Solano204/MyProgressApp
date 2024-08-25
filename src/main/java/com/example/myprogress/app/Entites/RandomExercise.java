@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RandomExercise {
     @JsonProperty("id")
     @Schema(description = "Unique identifier for the exercise", example = "12345", required = true)
