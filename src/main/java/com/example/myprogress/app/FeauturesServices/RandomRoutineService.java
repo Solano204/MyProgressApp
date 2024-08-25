@@ -118,7 +118,7 @@ public class RandomRoutineService {
         routine.setTimeDuration(timeDuration);
         routine.setAnyRecomendation(recommendation);
         exercisesRandom.stream().forEach(exercise -> {
-            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(reps).repetitions(series).recommendation(exercise.getDescription()).build();
+            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(series).repetitions(reps).recommendation(exercise.getDescription()).build();
             routine.getListExercises().add(exe); //Here I add the exercise to the routine
         });                
     }
@@ -127,13 +127,14 @@ public class RandomRoutineService {
         routine.setTimeDuration(timeDuration);
         routine.setAnyRecomendation(recommendation);
         exercisesRandom.stream().forEach(exercise -> {
-            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(reps).repetitions(series).recommendation(exercise.getDescription()).build();
+            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(series).repetitions(reps).recommendation(exercise.getDescription()).build();
             routine.getListExercises().add(exe); //Here I add the exercise to the routine
         });   
         exercisesRandom2.stream().forEach(exercise -> {
-            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(reps).repetitions(series).recommendation(exercise.getDescription()).build();
+            Exercise exe = Exercise.builder().nameExercise(exercise.getName()).series(series).repetitions(reps).recommendation(exercise.getDescription()).build();
             routine.getListExercises().add(exe); //Here I add the exercise to the routine
-        });               
+        });     
+                  
     }
 
 

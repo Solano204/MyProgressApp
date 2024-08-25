@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.myprogress.app.Entites.InfoRegister;
 import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.GeneralServices.MessagesFinal;

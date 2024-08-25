@@ -51,14 +51,11 @@ public class ValidateToken extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         
                    // Skip token validation for certain paths
-        
             
             try{
             validateToken(request, response, chain);
             // Create an Authentication token and set it in the SecurityContext
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    currentUserName, null, Collections.emptyList());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);  
+                
              chain.doFilter(request, response); // I sent the next level or the next filter
             } catch (Exception e) {
                 Map<String, String> body = new HashMap();
@@ -74,8 +71,7 @@ public class ValidateToken extends BasicAuthenticationFilter {
 
     public void validateToken(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(VariablesGeneral.AUTHORIZATION);
-        if (header == null || !header.startsWith(VariablesGeneral.HEADER_TOKEN)) {
-                chain.doFilter(request, response);
+        if (header == null || !header.startsWith(VariablesGeneral.HEADER_TOKEN )) {
             return;
         }
 
@@ -100,11 +96,14 @@ public class ValidateToken extends BasicAuthenticationFilter {
             }else{
                 throw new FieldIncorrectException("Token revoked");
             }
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    currentUserName, null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);  
 }
 
 private boolean shouldSkipValidation(String requestURI) {
     // List of endpoints to skip
-    String[] pathsToSkip = {"/RefreshToken"}; // Adjust paths as needed
+    String[] pathsToSkip = {"/RefreshToken","http://localhost:8080/swagger-ui.html"}; // Adjust paths as needed
     for (String path : pathsToSkip) {
         if (requestURI.matches(path.replace("**", ".*"))) {
             return true;

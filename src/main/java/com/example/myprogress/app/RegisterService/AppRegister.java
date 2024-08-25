@@ -33,12 +33,10 @@ public final class AppRegister extends Register implements Serializable {
         if (appUserRepository.addUser(user.getUser(), user.getPassWord(), user.getEmail(),user.getTypeAuthentication())) {
             loadRecommendedData(user); // Here I call the method default to load the recommend to the current user
             if (appUserRepository.addProgressUser(user)) {
-                return true;
+                return true;    
             }
             throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
         }
         throw new UnsuccessfulRegisterException("The user couldn't be registered"); // throw an exception
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.myprogress.app.SpringSecurity;
 import com.example.myprogress.app.Entites.appUser;
+import com.example.myprogress.app.Exceptions.FieldIncorrectException;
 import com.example.myprogress.app.GeneralServices.GenerateResponse;
 import com.example.myprogress.app.validations.ValidationOnlyRegisterGroup;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,9 +22,9 @@ public class RefreshToken {
 
     private final LogoutService validateToken;
     private final GenerateResponse generateResponse;
-    
-  public void refreshToken(
-    HttpServletRequest request, HttpServletResponse response, @RequestBody appUser user) throws IOException {
+        
+  public Map<String,Object> refreshToken(
+    HttpServletRequest request,@RequestBody appUser user) throws IOException {
         if(request != null && validateToken.ValidateToken(request)){
         Map<String, Object> body = new HashMap<>();
         String header = request.getHeader(VariablesGeneral.AUTHORIZATION);
@@ -31,17 +32,9 @@ public class RefreshToken {
         generateResponse.generateResponse(user, body);
         body.put("RefreshToken", token); // i must not modify the refresh token only the access token
         ResponseEntity.status(HttpStatus.ACCEPTED).body(body);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-        response.setStatus(200);
-        response.setContentType(VariablesGeneral.CONTENT_TYPE); // i give the message in format JSON
+       return body;
     }else{
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString("No se pudo hacer el refresh necesita logearse de nuevo"));
-        response.setStatus(200);
-        response.setContentType(VariablesGeneral.CONTENT_TYPE); // i give the message in format JSON
+        throw new FieldIncorrectException("Invalid token");
     }
     }
 }

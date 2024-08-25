@@ -114,7 +114,6 @@ public class updateInformationUserService {
                 return false;
             }
         }
-
         boolean j = appUserRepository.deleteUser(user);
         return j;
     }
@@ -123,7 +122,7 @@ public class updateInformationUserService {
         return appUserRepository.getUserSelected(user, typeAuthentication);
     }
 
-    // In this method i evaluate if the user's objetive is completed 
+    // In this method i evaluate if the user's objetive is completed
     public String evaluateObjetive(appUser user) {
         if (user.getRegisterInformation().getGoal().equals("Ganar Peso")
                 && user.getRegisterInformation().getEndWeight() < user.getInfoLogged().getCurrentWeight()) {

@@ -46,12 +46,12 @@
 	</scm>
 	<properties>
 		<java.version>
-			21
+			17
 		</java.version>
 	</properties>
 	<dependencies>
 	
-		<!--
+		
 		<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -60,7 +60,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		-->
+		
 
 		<dependency>
 			<groupId>
@@ -86,6 +86,15 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
 </dependency>
+
+
+
+
+	<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 
 <dependency>
     <groupId>mysql</groupId>
@@ -171,6 +180,42 @@
     <version>20210307</version>
 </dependency>
 
+ <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.3</version>
+        </dependency>
+
+
+
+<!-- Dependencies to make the test with MongoDB -->
+    <!-- Spring Boot Starter for MongoDB -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    
+    <!-- Embedded MongoDB for testing -->
+  <dependency>
+    <groupId>de.flapdoodle.embed</groupId>
+    <artifactId>de.flapdoodle.embed.mongo</artifactId>
+    <version>4.8.0</version> <!-- Or check for the latest version -->
+    <scope>test</scope>
+</dependency>
+    <!-- Spring Boot Test dependencies -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+<!-- 
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>test</scope>
+</dependency>  -->
 
 	</dependencies>
 	<build>

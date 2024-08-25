@@ -4,15 +4,17 @@
 
 DROP PROCEDURE IF EXISTS add_user_app; 
 DELIMITER //
-
 CREATE PROCEDURE add_user_app(
     IN id_user VARCHAR(20),
     IN password VARCHAR(100),
     IN email_user VARCHAR(100),
+    IN typeAuthentication VARCHAR(20),
     OUT in_success BOOLEAN
 )
 BEGIN
+
     -- Initialize success flag
+    declare  au INT;
     SET in_success = TRUE;
 -- Validate id_user
     IF id_user IS NULL OR CHAR_LENGTH(id_user) < 5 OR CHAR_LENGTH(id_user) > 80 THEN
@@ -35,16 +37,18 @@ BEGIN
         SET in_success = FALSE; 
     END IF;
 
+
+SELECT   id into au from type_authentication where type_au = typeAuthentication;
     -- InDDDSDSDFGGDSFs	IFF(ert into App_Users table if all validations pass
     IF in_success then
-    INSERT INTO App_Users (id_user, PassWord, email_user) 
-    VALUES (id_user, password, email_user);
+    INSERT INTO App_Users (id_user, PassWord, email_user,id_authentication) 
+    VALUES (id_user, password, email_user,au);
 end if;
     -- Set success flag to TRUE after successful insertion
     SET in_success = TRUE;
-END //
+END
 
-DELIMITER ;
+// DELIMITER ;
 
 
 SELECT * FROM app_users;

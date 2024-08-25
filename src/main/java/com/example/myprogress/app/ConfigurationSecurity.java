@@ -69,13 +69,18 @@ public class ConfigurationSecurity {
     private final LogoutHandler logoutHandler;
     private final TokenServices tokenService2;
     private final List<String> urls = List.of(
-        "/login", 
+        "/auth/login", 
         "/Register/App/User",
         "/Authentication/SuccessfulAuthentication",
         "/Register/Google/User",
         "//RefreshToken",
         "/Login/Google/User",
-        "/oauth2/authorization/**"
+        "/oauth2/authorization/**",
+        "/swagger-ui/**",
+        "/v3/**",
+         "/swagger-ui.html/**"
+
+        
     );
 
 
@@ -113,7 +118,7 @@ public class ConfigurationSecurity {
                 // Here I add new filter to make my logic, because the user and the has been authenticated
                 //.addFilter(new CustomTokenValidationFilter(authenticationManager(), clientService))
                 //.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilter(new AuthenticationStart(authenticationManager(), buildToken, loginGeneral, repósitory, messagesFinal,generateResponse))
+     //   .addFilter(new AuthenticationStart(authenticationManager(), buildToken, loginGeneral, repósitory, messagesFinal,generateResponse))
         .addFilter(new ValidateToken(authenticationManager(), tokenService2, tokenService2))
 
 

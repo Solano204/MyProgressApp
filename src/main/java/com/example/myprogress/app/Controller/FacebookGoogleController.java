@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.myprogress.app.Entites.CaloriesIntake;
 import com.example.myprogress.app.Entites.InfoRegister;
+import com.example.myprogress.app.Entites.InfosLogged;
 import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 import com.example.myprogress.app.Exceptions.UserExistException;
 import com.example.myprogress.app.GeneralServices.GenerateResponse;
@@ -29,11 +29,13 @@ import com.example.myprogress.app.Repositories.GoogleUserRepository;
 import com.example.myprogress.app.SpringSecurity.BuildToken;
 import com.example.myprogress.app.validations.ValidationOnlyRegisterGroup;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 
 //This class is for Facebook and Google
 @Data
+@Hidden // This allow me to hidden the endpoint in swagger
 @RestController
 @CrossOrigin(origins = "*")
 public class FacebookGoogleController {
@@ -51,7 +53,7 @@ public class FacebookGoogleController {
     // This method is charge to register the user Type Google
     @PostMapping("/Register/Google/User")
     public void registerUserGoogle(@Validated(ValidationOnlyRegisterGroup.class) @RequestBody appUser user, HttpServletResponse response) throws IOException { 
-        user.setInfoLogged(new infoLogged());
+        user.setInfoLogged(new InfosLogged());
         if (googleUserRepository.ExistUser(user.getUser())) {
             throw new UserExistException("Lo sentimos ya existe una persona con ese usuario");
         }
@@ -70,7 +72,7 @@ public class FacebookGoogleController {
     // This method is charge to login the user Type Google
     @PostMapping("/Login/Google/User")
     public void registerLoginGoogle( @RequestBody appUser user, HttpServletResponse response) throws IOException { 
-        user.setInfoLogged(new infoLogged());
+        user.setInfoLogged(new InfosLogged());
         
         if (!googleUserRepository.ExistUser(user.getUser())) {
             

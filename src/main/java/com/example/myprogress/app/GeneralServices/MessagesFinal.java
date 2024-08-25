@@ -13,8 +13,8 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.example.myprogress.app.Entites.InfoRegister;
+import com.example.myprogress.app.Entites.InfosLogged;
 import com.example.myprogress.app.Entites.User;
-import com.example.myprogress.app.Entites.infoLogged;
 
 
 @Component
@@ -23,7 +23,7 @@ public class MessagesFinal {
     @SuppressWarnings("unchecked")
     public void fillMapInformation(Map messages, User user) {
         InfoRegister registerInfo = user.getRegisterInformation();
-        infoLogged loggedInfo = user.getInfoLogged();
+        InfosLogged loggedInfo = user.getInfoLogged();
 
         messages.put("User", user.getUser());
         messages.put("Email", user.getEmail());

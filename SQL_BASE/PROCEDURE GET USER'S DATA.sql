@@ -109,7 +109,7 @@ SELECT
     @State_healthS AS State_health,
     @TypeLevelS AS TypeLevel;
  
- - GET EMAIL EXITS
+ -- GET EMAIL EXITS
  DROP PROCEDURE IF EXISTS user_app_exist_email; 
 DELIMITER //
 CREATE PROCEDURE user_app_exist_email(

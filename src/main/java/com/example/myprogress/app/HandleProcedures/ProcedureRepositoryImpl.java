@@ -8,9 +8,9 @@ import org.hibernate.resource.transaction.backend.jta.internal.synchronization.R
 import org.springframework.stereotype.Component;
 
 import com.example.myprogress.app.Entites.InfoRegister;
+import com.example.myprogress.app.Entites.InfosLogged;
 import com.example.myprogress.app.Entites.User;
 import com.example.myprogress.app.Entites.appUser;
-import com.example.myprogress.app.Entites.infoLogged;
 import com.example.myprogress.app.Exceptions.UnsuccessfulRegisterException;
 
 import jakarta.persistence.EntityManager;
@@ -116,7 +116,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         query.setParameter("User", user.getUser());
         // This object contain the information to saved
         InfoRegister registerInfo = user.getRegisterInformation();
-        infoLogged loggedInfo = user.getInfoLogged();
+        InfosLogged loggedInfo = user.getInfoLogged();
         query.setParameter("NameUserS", registerInfo.getName());
         query.setParameter("CountryS", registerInfo.getCountry());
         query.setParameter("HeightS", registerInfo.getHeight());
@@ -181,7 +181,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
         query.setParameter("UserS", user);
         boolean hj = query.execute();
         appUser appUser = new appUser();
-        appUser.setInfoLogged(new infoLogged());
+        appUser.setInfoLogged(new InfosLogged());
         appUser.setRegisterInformation(new InfoRegister());
         if (Authentication.equals("App")) {
             appUser.setPassWord((String) query.getOutputParameterValue("passwordS"));
@@ -195,7 +195,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
     User getUserSelectedInformation(User normalUser, StoredProcedureQuery query) {
         // This object contain the information to saved
         InfoRegister registerInfo = normalUser.getRegisterInformation();
-        infoLogged loggedInfo = normalUser.getInfoLogged();
+        InfosLogged loggedInfo = normalUser.getInfoLogged();
         normalUser.setUser((String) query.getOutputParameterValue("UserS"));
         normalUser.setEmail((String) query.getOutputParameterValue("EmailS"));
         normalUser.setTypeAuthentication((String) query.getOutputParameterValue("TypeAuthenticationS"));
@@ -256,7 +256,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
     @Override
     public boolean updateInformation24Hours(appUser normalUser) {
         InfoRegister registerInfo = normalUser.getRegisterInformation();
-        infoLogged loggedInfo = normalUser.getInfoLogged();
+        InfosLogged loggedInfo = normalUser.getInfoLogged();
 
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("updateStateUser");
 
@@ -294,7 +294,7 @@ public class ProcedureRepositoryImpl implements ProcedureRepository {
     @Override
     public boolean updateDataSelected(appUser normalUser) {
         InfoRegister registerInfo = normalUser.getRegisterInformation();
-        infoLogged loggedInfo = normalUser.getInfoLogged();
+        InfosLogged loggedInfo = normalUser.getInfoLogged();
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("updateData");
 
         // Register input parameters

@@ -42,6 +42,7 @@ public class GenerateResponse {
         if (generateRefreshToken) {
             refreshToken = buildToken.generateToken(user.getUser(),refreshExpiration);
         }
+        
         tokenServices.deleteToken(user.getUser());
         Token newToken = new Token(token,user.getUser());
         tokenServices.saveToken(newToken);

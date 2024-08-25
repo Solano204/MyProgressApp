@@ -128,7 +128,7 @@ public List<Recipe> getAllRecipes(String user) {
 // This method will be used to delete a recipe for a user
 public void deleteRecipe(String nameRecipe, String user) {
     try {
-        recipesRepository.deleteByUserAndNameRecipe(user, nameRecipe);
+        recipesRepository.deleteByUserAndNameRecipe(user, nameRecipe);  
     } catch (Exception e) {
         throw new FieldIncorrectException("La receta no pudo ser eliminada");
     }
